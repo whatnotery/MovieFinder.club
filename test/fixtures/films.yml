@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  year: MyString
+  plot: MyString
+  poster: MyString
+  mdb_id: MyString
+
+two:
+  title: MyString
+  year: MyString
+  plot: MyString
+  poster: MyString
+  mdb_id: MyString
