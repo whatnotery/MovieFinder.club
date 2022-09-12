@@ -16,6 +16,7 @@ gem "puma", "~> 5.0"
 # gem "jbuilder"
 gem 'http' 
 gem 'rack-cors'
+gem 'twilio-ruby'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 
