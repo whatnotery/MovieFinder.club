@@ -26,7 +26,7 @@ class FilmsController < ApplicationController
     def twilio
         data = get_random_film
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{data['original_title']} /n -------- /n  #{data['tagline']} /n -------- #{data['overview']}"
+            r.message body: "#{data['original_title']} \n -------- \n  #{data['tagline']} \n -------- #{data['overview']}"
 
           end
         render xml: twiml
