@@ -27,7 +27,11 @@ class FilmsController < ApplicationController
         data = get_random_film
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
             r.message body: "#{data['original_title']}"
-            r.message body: "#{data['tagline']}"
+            r.message body: "--------"
+            if data['tagline'].present?
+                r.message body: "#{data['overview']}"
+                r.message body: "--------"
+            end
             r.message body: "#{data['overview']}"
           end
         render xml: twiml
