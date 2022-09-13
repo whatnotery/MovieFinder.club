@@ -25,8 +25,9 @@ class FilmsController < ApplicationController
 
     def twilio
         data = get_random_film
+        poster = "https://image.tmdb.org/t/p/w300/#{data['poster_path']}"
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{data['original_title']} \n -------- \n  #{data['tagline']} \n -------- #{data['overview']}"
+            r.message body: "#{data['original_title']} \n -------- \n #{data['overview']}", media_url: [poster]
 
           end
         render xml: twiml
