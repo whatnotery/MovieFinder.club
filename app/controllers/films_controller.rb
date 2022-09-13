@@ -1,6 +1,7 @@
 class FilmsController < ApplicationController
     require 'http'
-    
+    require 'twilio-ruby'
+
     def get_latest_film_id
         response = HTTP.get('https://api.themoviedb.org/3/movie/latest', :params => {:api_key => 'b07d3efad9e75e49c88e831539462c48'})
         response.parse['id'] if response.status == 200
@@ -20,4 +21,12 @@ class FilmsController < ApplicationController
     def index
        render json: get_random_film
     end
+
+    def twilio
+        twiml = Twilio::TwiML::MessagingResponse.new do |r|
+            r.message body: 'The Robots are coming! Head for the hills!'
+          end
+        render xml: twiml
+    end
+
 end
