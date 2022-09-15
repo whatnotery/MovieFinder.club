@@ -24,7 +24,8 @@ class FilmsController < ApplicationController
     end
 
     def twilio
-        incoming = request.body.read
+        incoming_message = request.body.read.to_json
+        puts incoming_message
         #data = get_random_film
         #poster = "https://image.tmdb.org/t/p/w300/'#{data['poster_path']}"
         #imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
