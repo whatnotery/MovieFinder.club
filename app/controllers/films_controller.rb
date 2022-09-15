@@ -12,7 +12,7 @@ class FilmsController < ApplicationController
         movie_id = rand(get_latest_film_id);
         response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
         data = response.parse if response.status == 200
-        if data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or if genre.present? do data['genres'][0]['name'].upcase == genre.upcase end;   
+        if data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or if genre.present? do data['genres'][0]['name'].upcase == genre.upcase end end   
             get_random_film
         else
             data
