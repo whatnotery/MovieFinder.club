@@ -33,7 +33,7 @@ class FilmsController < ApplicationController
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
            # r.message body: "#{data['original_title']} (#{data['release_date'].slice(0, 4)}) \n -------- \n #{data['overview']}", media_url: poster
            # r.message body: imdb
-           r.message body: "#{incoming}"
+           r.message body: "#{incoming_message}"
            r.message body: "#{params['body']}"
           end
         render xml: twiml
