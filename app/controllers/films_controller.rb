@@ -24,7 +24,7 @@ class FilmsController < ApplicationController
     end
 
     def twilio
-        incoming_message = request.body.read.to_json
+        incoming_message = request.body.read.to_json['Body']
         #data = get_random_film
         #poster = "https://image.tmdb.org/t/p/w300/'#{data['poster_path']}"
         #imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
@@ -32,7 +32,7 @@ class FilmsController < ApplicationController
            # r.message body: "#{data['original_title']} (#{data['release_date'].slice(0, 4)}) \n -------- \n #{data['overview']}", media_url: poster
            # r.message body: imdb
            r.message body: "#{incoming_message}"
-           r.message body: "#{params['body']}"
+           r.message body: "#{params['Body']}"
           end
         render xml: twiml
     end
