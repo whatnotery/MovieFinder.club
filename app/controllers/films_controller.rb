@@ -5,15 +5,18 @@ class FilmsController < ApplicationController
     def get_latest_film_id
         response = HTTP.get('https://api.themoviedb.org/3/movie/latest', :params => {:api_key => ENV['MOVIE_DB_API_KEY']
             })
-        response.parse['id'] if response.status == 200
+        response.parse['id'] if response.status == 200 else
+        get_latest_film_id
+        end 
     end
 
     def get_random_film(*genre)
         movie_id = rand(get_latest_film_id);
         response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
-        data = response.parse if response.status == 200
-        if data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or data['genres'][0]['name'].upcase == genre.upcase 
-            get_random_film
+        data = response.parse if response.status == 200 
+        
+        if (data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline'] or !data['genres']) and (genre.present? ? data['genres'][0]['name'] = "#{genre[0].capitalize}" : nil )
+            get_random_film(genre[0])
         else
             data
         end
