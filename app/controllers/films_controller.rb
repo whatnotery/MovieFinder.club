@@ -9,7 +9,7 @@ class FilmsController < ApplicationController
     end
 
     def get_random_film(*genre)
-        genre = genre[0].capitalize
+        genre = genre[0].capitalize if genre.present?
         movie_id = rand(get_latest_film_id);
         response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
         data = response.parse if response.status == 200 
