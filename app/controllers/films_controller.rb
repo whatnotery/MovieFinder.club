@@ -5,25 +5,28 @@ class FilmsController < ApplicationController
     def get_latest_film_id
         response = HTTP.get('https://api.themoviedb.org/3/movie/latest', :params => {:api_key => ENV['MOVIE_DB_API_KEY']
             })
-        response.parse['id'] if response.status == 200 else
-        get_latest_film_id
-        end 
+        response.parse['id'] if response.status == 200
     end
 
     def get_random_film(*genre)
+        genre = genre[0].capitalize
         movie_id = rand(get_latest_film_id);
         response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
         data = response.parse if response.status == 200 
-        
-        if (data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline'] or !data['genres']) and (genre.present? ? data['genres'][0]['name'] = "#{genre[0].capitalize}" : nil )
-            get_random_film(genre[0])
-        else
-            data
+        byebug
+        if genre.present? and !data['genres'][0]['name'].nil?
+            if (data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline'] or !data['genres'][0]['name'])
+                get_random_film(genre)
+            elsif data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline']
+                get_random_film()
+            else
+                data
+            end
         end
     end
 
     def index
-       render json: get_random_film
+       render json: get_random_film('horror')
     end
 
     def twilio
