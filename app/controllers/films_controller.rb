@@ -26,11 +26,11 @@ class FilmsController < ApplicationController
     end
 
     def index
-       render json: get_random_film(params['genre'])
+       render json: get_random_film("#{params['genre']}")
     end
 
     def twilio
-        data = get_random_film(params['body'])
+        data = get_random_film("#{params['body']}")
         poster = "https://image.tmdb.org/t/p/w300/'#{data['poster_path']}"
         imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
