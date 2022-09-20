@@ -15,7 +15,7 @@ class FilmsController < ApplicationController
         data = response.parse if response.status == 200 
         byebug
         if genre.present? and !data['genres'][0]['name'].nil?
-            if (data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline'] or !data['genres'][0]['name'])
+            if (data["adult"] == true or data['title'].blank? or data['poster_path'].blank? or data['overview'].blank? or data['tagline'].blank? or data['genres'][0]['name'].present?)
                 get_random_film(genre)
             elsif data["adult"] == true or !data['title'] or !data['poster_path'] or !data['overview'] or !data['tagline']
                 get_random_film()
@@ -26,7 +26,7 @@ class FilmsController < ApplicationController
     end
 
     def index
-       render json: get_random_film('horror')
+       render json: get_random_film(params['genre'])
     end
 
     def twilio
