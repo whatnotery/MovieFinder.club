@@ -1,5 +1,4 @@
 class FilmsController < ApplicationController
-    require 'twilio-ruby'
 
     def index
         if params['genre'].present?

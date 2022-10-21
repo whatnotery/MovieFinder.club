@@ -1,5 +1,6 @@
 class Film < ApplicationRecord
     require 'http'
+    require 'twilio-ruby'
 
     def self.get_latest_film_id
         response = HTTP.get('https://api.themoviedb.org/3/movie/latest', :params => {:api_key => ENV['MOVIE_DB_API_KEY']
