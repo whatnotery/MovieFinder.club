@@ -22,7 +22,7 @@ class Film < ApplicationRecord
         end
     end
 
-    def twiml(*params)
+    def self.twiml(*params)
         if params.empty?
             data = Film.get_random_film()
         else
