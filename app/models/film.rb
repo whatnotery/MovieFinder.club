@@ -31,8 +31,7 @@ class Film < ApplicationRecord
         poster = "https://image.tmdb.org/t/p/w300/'#{data['poster_path']}"
         imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: media_url: poster
-            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) \n -------- \n #{data['overview']}"
+            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) [#{data['genres'][0]['name']}] \n -------- \n #{data['overview']}"
             r.message body: imdb
         end
     end
