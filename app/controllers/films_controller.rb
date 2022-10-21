@@ -11,9 +11,9 @@ class FilmsController < ApplicationController
 
     def twilio
         if params['genre'].present?
-            render xml: twiml(params['genre'])
+            render xml: Film.twiml(params['genre'])
         else
-            render xml: twiml()
+            render xml: Film.twiml()
         end
     end
 
