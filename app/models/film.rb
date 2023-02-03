@@ -8,19 +8,35 @@ class Film < ApplicationRecord
         response.parse['id'] if response.status == 200
     end
 
-    def self.get_random_film(*genre)
+    def self.get_random_film(genre = nil)
         movie_id = rand(get_latest_film_id);
         response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
         data = response.parse if response.status == 200
-        if !genre.empty?
-            if !data['genres'].empty? and data['genres'][0]['name'] == genre[0].capitalize and data["adult"] == false or !data['title'].blank? or !data['poster_path'].blank? or !data['overview'].nil? or !data['tagline'].nil?  
-                data
-            else
-                get_random_film(genre[0].capitalize) 
-            end
-        else
-            get_random_film()
+        byebug
+        if !movie_valid?(data)
+           get_random_film()
         end
+        if !genre_valid?(data, genre)
+          get_random_film(genre)
+        end
+        data
+    end
+
+    def self.movie_valid?(data)      
+        data["adult"] == "false" or
+        !data['title'].blank? or
+        !data['poster_path'].blank? or
+        !data['overview'].nil? or
+        !data['tagline'].nil?  
+    end
+
+    def self.genre_valid?(data, *genre)
+      if !genre
+        true
+      else
+        !data['genres'].empty? and
+        data['genres'][0]['name'] == genre
+      end
     end
 
     def self.twiml(*params)
