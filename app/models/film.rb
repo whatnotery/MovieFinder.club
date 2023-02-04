@@ -34,27 +34,40 @@ class Film < ApplicationRecord
 
     def self.genre_valid?(data, genre=nil)
         if genre.nil?
-            return true
+            true
         elsif data['genres'].length < 1
-            return false        
+            false        
         elsif data['genres'][0]['name'] == genre
-            return true
+            true
         else
             false
         end
     end
 
+    def self.genre_param_valid?(genre_param)
+        genre_list = ['Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'War', 'Western']
+        genre_list.include?(genre_param.try(:titleize))
+    end
+
+
     def self.twiml(params = nil)
         if params.nil?
-            data = Film.get_random_film()
-        else
-            data = Film.get_random_film(params)
+            data = get_random_film()
+        elsif genre_param_valid?(params)
+            data = get_random_film(params)
         end
         poster = "https://image.tmdb.org/t/p/w300'#{data['poster_path']}"
         imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) [#{data['genres'][0]['name']}] \n -------- \n #{data['overview']}"
+            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{!data['genres'].empty? ? [data['genres'][0]['name']] : ''} \n -------- \n #{data['overview']}"
             r.message body: imdb
+        end
+    end
+
+    def self.twiml_error()
+        twiml = Twilio::TwiML::MessagingResponse.new do |r|
+            r.message body: "Please use the syntax 'Movie' for a completely random film and 'Movie:Genre' for a random film from a selected genre'"
+            r.message body: 'Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Science Fiction, Thriller, War, and Western'
         end
     end
 end

@@ -9,10 +9,14 @@ class FilmsController < ApplicationController
     end
 
     def twilio
-        if params['Body'].length < 6
-            render xml: Film.twiml()
+        if params['Body'][0..4].downcase != 'movie' 
+            render xml: Film.twiml_error()
+        elsif params['Body'].length >= 6 and !Film.genre_param_valid?(params['Body'][6..40].try(:titleize))
+            render xml: Film.twiml_error()
+        elsif Film.genre_param_valid?(params['Body'][6..40].try(:titleize))
+            render xml: Film.twiml(params['Body'][6..40].titleize)
         else
-            render xml: Film.twiml(params['Body'][6..25].capitalize)
+            render xml: Film.twiml()
         end
     end
 
