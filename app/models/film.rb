@@ -29,7 +29,7 @@ class Film < ApplicationRecord
         !data["title"].blank? and
         !data['poster_path'].blank? and
         !data['overview'].blank? and
-        !data["imdb_id"].blreank?
+        !data["imdb_id"].blank?
     end
 
     def self.genre_valid?(data, genre=nil)
