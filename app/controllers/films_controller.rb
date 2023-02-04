@@ -9,10 +9,10 @@ class FilmsController < ApplicationController
     end
 
     def twilio
-        if params['Body'].length < 5
+        if params['Body'].length < 6
             render xml: Film.twiml()
         else
-            render xml: Film.twiml(params['Body'][6..25])
+            render xml: Film.twiml(params['Body'][6..25].capitalize)
         end
     end
 

@@ -44,8 +44,8 @@ class Film < ApplicationRecord
         end
     end
 
-    def self.twiml(*params)
-        if params.empty?
+    def self.twiml(params = nil)
+        if params.nil?
             data = Film.get_random_film()
         else
             data = Film.get_random_film(params)
