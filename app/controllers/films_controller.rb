@@ -18,4 +18,5 @@ class FilmsController < ApplicationController
         else
             render xml: Film.twiml()
         end
+    end
 end
