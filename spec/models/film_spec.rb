@@ -122,51 +122,45 @@ describe ".movie_valid?" do
     end
   end
 
-  # describe ".twiml" do
-  #   context "when params are nil" do
-  #     it "returns a random film" do
-  #       allow(Film).to receive(:get_random_film).and_return({
-  #         "poster_path": "poster.jpg",
-  #         "imdb_id": "tt1234567",
-  #         "title": "Test Film",
-  #         "release_date": "2022-01-01",
-  #         "genres": [{"name": "Comedy"}],
-  #         "overview": "Test overview"
-  #       })
-  #       twiml = Film.twiml(nil)
-  #       expect(twiml.message[0].body).to include("Test Film (2022) Comedy")
-  #       expect(twiml.message[0].body).to include("Test overview")
-  #       expect(twiml.message[1].body).to eq("https://www.imdb.com/title/tt1234567")
-  #     end
-  #   end
-  
-  #   context "when params are a valid genre" do
-  #     it "returns a random film from the selected genre" do
-  #       allow(Film).to receive(:genre_param_valid?).and_return(true)
-  #       allow(Film).to receive(:get_random_film).and_return({
-  #         "poster_path": "poster.jpg",
-  #         "imdb_id": "tt1234567",
-  #         "title": "Test Film",
-  #         "release_date": "2022-01-01",
-  #         "genres": [{"name": "Comedy"}],
-  #         "overview": "Test overview"
-  #       })
-  #       twiml = Film.twiml("Comedy")
-  #       expect(twiml.message[0].body).to include("Test Film (2022) Comedy")
-  #       expect(twiml.message[0].body).to include("Test overview")
-  #       expect(twiml.message[1].body).to eq("https://www.imdb.com/title/tt1234567")
-  #     end
-  #   end
-  # end
-  
-  # describe ".twiml_error" do
-  #   it "returns error message" do
-  #     twiml = Film.twiml_error
-  #     expect(twiml.message[0].body).to eq("Please use the syntax 'Movie' for a completely random film and 'Movie:Genre' for a random film from a selected genre'")
-  #     expect(twiml.message[1].body).to eq('Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Science Fiction, Thriller, War, and Western')
-  #   end
-  # end 
-  
-  
-  
-    
+  describe '.twiml' do
+    context 'when params are nil' do
+      it 'returns a Twilio::TwiML::MessagingResponse object with random film data' do
+        allow(Film).to receive(:get_random_film).and_return({
+          'title' => 'Test Film',
+          'release_date' => '2022-01-01',
+          'genres' => [{ 'name' => 'Action' }],
+          'overview' => 'Test film overview',
+          'poster_path' => 'test/poster.jpg',
+          'imdb_id' => 'tt1234567'
+        })
+
+        twiml = Film.twiml
+
+        expect(twiml).to be_a(Twilio::TwiML::MessagingResponse)
+        expect(twiml.to_s).to include('Test Film (2022) ["Action"]')
+        expect(twiml.to_s).to include('Test film overview')
+        expect(twiml.to_s).to include('https://www.imdb.com/title/tt1234567')
+      end
+    end
+
+    context 'when params are present' do
+      it 'returns a Twilio::TwiML::MessagingResponse object with random film data from the specified genre' do
+        allow(Film).to receive(:genre_param_valid?).with('Action').and_return(true)
+        allow(Film).to receive(:get_random_film).with('Action').and_return({
+          'title' => 'Test Film',
+          'release_date' => '2022-01-01',
+          'genres' => [{ 'name' => 'Action' }],
+          'overview' => 'Test film overview',
+          'poster_path' => 'test/poster.jpg',
+          'imdb_id' => 'tt1234567'
+        })
+
+        twiml = Film.twiml('Action')
+
+        expect(twiml).to be_a(Twilio::TwiML::MessagingResponse)
+        expect(twiml.to_s).to include('Test Film (2022) ["Action"]')
+        expect(twiml.to_s).to include('Test film overview')
+        expect(twiml.to_s).to include('https://www.imdb.com/title/tt1234567')
+      end
+    end
+  end
