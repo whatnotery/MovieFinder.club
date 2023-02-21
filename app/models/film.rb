@@ -2,75 +2,181 @@ class Film < ApplicationRecord
     require 'http'
     require 'twilio-ruby'
 
-
-    def self.get_latest_film_id
-        response = HTTP.get('https://api.themoviedb.org/3/movie/latest', :params => {:api_key => ENV['MOVIE_DB_API_KEY']
-            })
-        response.parse['id'] if response.status == 200
+    def self.get_random_film(genre = nil, year = nil)
+        api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
+        base_url = "https://api.themoviedb.org/3/discover/movie"
+        random_page_number = rand(100)
+        # Build the query parameters based on the optional arguments
+        query_params = {
+            api_key: api_key,
+            sort_by: "popularity.desc",
+            include_adult: false,
+            include_video: false,
+            page: random_page_number
+        }
+        query_params[:primary_release_year] = year if year
+        query_params[:with_genres] = genre_id_lookup(genre) if genre
+        # Make the API request and parse the response JSON
+        response = HTTP.get(base_url, params: query_params)
+        response_body = response.parse if response.status == 200
+        # Get a random film from the results
+        films = response_body["results"]
+        random_film = films.sample
+        # Return the random film as a hash with relevant details
+        if random_film.nil? or !movie_valid?(random_film)
+            get_random_film(genre, year)
+        else
+            random_film
+        end
     end
 
-    def self.get_random_film(genre = nil)
-        movie_id = rand(get_latest_film_id);
-        response = HTTP.get("https://api.themoviedb.org/3/movie/#{movie_id}", :params => {:api_key => ENV['MOVIE_DB_API_KEY']})
-        data = response.parse if response.status == 200
-        if data.nil?
-            data = get_random_film(genre)
-        end
-        if !movie_valid?(data)
-          data = get_random_film(genre)
-        end
-        if !genre_valid?(data, genre)
-          data = get_random_film(genre)
-        end 
-        return data
+    def self.get_watch_providers(movie_id, country_code)
+    api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
+    base_url = "https://api.themoviedb.org/3/movie/#{movie_id}/watch/providers"
+
+    # Build the query parameters
+    query_params = {
+        api_key: api_key,
+        country: country_code
+    }
+
+    # Make the API request and parse the response JSON
+    response = HTTP.get(base_url, params: query_params)
+    response_body = response.parse if response.status == 200
+    byebug
+    # Get the results for the specified country code
+    country_results = response_body["results"][country_code] if !response_body["results"].nil?
+
+    # Extract the available providers from the results
+    if country_results && country_results["flatrate"]
+        providers = country_results["flatrate"].map { |provider| provider["provider_name"] }
+    else
+        providers = nil
     end
 
-    def self.movie_valid?(data)
-        !data["adult"] == true and     
+    # Return the list of available providers
+    return providers
+    end 
+
+    def self.movie_valid?(data) 
         !data["title"].blank? and
         !data['poster_path'].blank? and
         !data['overview'].blank? and
-        !data["imdb_id"].blank?
+        !data['release_date'].blank?
     end
 
-    def self.genre_valid?(data, genre=nil)
-        if genre.nil?
-            true
-        elsif data['genres'].length < 1
-            false        
-        elsif data['genres'][0]['name'] == genre
-            true
-        else
-            false
-        end
+    def self.genre_param_valid?(genre)
+        genre_list = [
+            'Action', 
+            'Adventure', 
+            'Animation', 
+            'Comedy', 
+            'Crime', 
+            'Documentary', 
+            'Drama', 
+            'Family', 
+            'Fantasy', 
+            'History', 
+            'Horror', 
+            'Music', 
+            'Mystery', 
+            'Romance', 
+            'Science Fiction', 
+            'Thriller', 
+            'War', 
+            'Western'
+        ]
+        genre_list.include?(genre.try(:titleize)) or genre == nil
     end
 
-    def self.genre_param_valid?(genre_param)
-        genre_list = ['Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'War', 'Western']
-        genre_list.include?(genre_param.try(:titleize))
+    def self.year_param_valid?(year)
+        (1900..Date.today.year).to_a.include?(year.to_i) or year == nil
+    end
+    
+    def self.param_array(body)
+        body.downcase.split(/\s|:/)
+    end
+
+    def self.get_random_film_args(param_array)
+        hash = {}
+        param_array.include?('year') ? hash['year'] = param_array[param_array.index('year') + 1] : hash['year'] = nil;
+        param_array.include?('genre') ? hash['genre'] = param_array[param_array.index('genre') + 1] : hash['genre'] = nil;
+        hash
     end
 
 
-    def self.twiml(params = nil)
-        if params.nil?
+    def self.genre_id_lookup(genre_name) 
+        genre_lookup = {
+            "Action": 28,
+            "Adventure": 12,
+            "Animation": 16,
+            "Comedy": 35,
+            "Crime": 80,
+            "Documentary": 99,
+            "Drama": 18,
+            "Family": 10751,
+            "Fantasy": 14,
+            "History": 36,
+            "Horror": 27,
+            "Music": 10402,
+            "Mystery": 9648,
+            "Romance": 10749,
+            "Science Fiction": 878,
+            "Thriller": 53,
+            "War": 10752,
+            "Western": 37
+        }
+        genre_lookup[:"#{genre_name.titleize}"]
+    end
+
+    def self.genre_from_id_lookup(id)
+        id_lookup = {
+            "12": "Adventure",
+            "14": "Fantasy",
+            "16": "Animation",
+            "18": "Drama",
+            "27": "Horror",
+            "28": "Action",
+            "35": "Comedy",
+            "36": "History",
+            "37": "Western",
+            "53": "Thriller",
+            "80": "Crime",
+            "99": "Documentary",
+            "878": "Science Fiction",
+            "9648": "Mystery",
+            "10402": "Music",
+            "10749": "Romance",
+            "10751": "Family",
+            "10752": "War"
+        }
+        id_lookup[:"#{id.to_s}"]
+    end
+
+    def self.twiml(genre = nil, year = nil)
+        if genre.nil? && year.nil?
             data = get_random_film()
-        elsif genre_param_valid?(params)
-            data = get_random_film(params)
+        elsif genre_param_valid?(genre) && year.nil?
+            data = get_random_film(genre)
+        elsif genre.nil? && !year.nil? 
+            data = get_random_film(genre, year)
+        elsif !genre.nil? && !year.nil?
+            data = get_random_film(genre, year)
         end
-        poster = "https://image.tmdb.org/t/p/w300'#{data['poster_path']}"
-        imdb = "https://www.imdb.com/title/#{data['imdb_id']}"
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{!data['genres'].empty? ? [data['genres'][0]['name']] : ''} \n -------- \n #{data['overview']}"
-            r.message body: imdb
+            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{genre ? [genre] : ''} \n -------- \n #{data['overview']}"
+
         end
     end
 
     def self.twiml_error()
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "Please use the syntax 'Movie' for a completely random film and 'Movie:Genre' for a random film from a selected genre'"
-            r.message body: 'Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Science Fiction, Thriller, War, and Western'
+            r.message body: "use the syntax 'Movie' for a completely random film"
+            r.message body: "use 'Movie Genre:Action' for a random film from a selected genre"
+            r.message body: "use 'Movie Year:1999' for a random film from a selected year"
+            r.message body: "use  'Movie Genre:Horror Year:1982' for a film from that year and genre"
+            r.message body: 'Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Thriller, War, and Western'
         end
     end
 end
-
 
