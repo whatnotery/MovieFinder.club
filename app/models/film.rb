@@ -171,11 +171,11 @@ class Film < ApplicationRecord
 
     def self.twiml_error()
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "use the syntax 'Movie' for a completely random film"
-            r.message body: "use 'Movie Genre:Action' for a random film from a selected genre"
-            r.message body: "use 'Movie Year:1999' for a random film from a selected year"
-            r.message body: "use  'Movie Genre:Horror Year:1982' for a film from that year and genre"
-            r.message body: 'Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Thriller, War, and Western'
+            r.message body: "use the syntax 'Movie' for a completely random film \n
+            use 'Movie Genre:Action' for a random film from a selected genre \n
+            use 'Movie Year:1999' for a random film from a selected year \n
+            use'Movie Genre:Horror Year:1982' for a film from that year and genre \n
+            Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Thriller, War, and Western"
         end
     end
 end
