@@ -86,7 +86,11 @@ class Film < ApplicationRecord
             'War', 
             'Western'
         ]
-        genre_list.include?(genre.try(:titleize))
+        genre_list.include?(genre.try(:titleize)) or genre == nil
+    end
+
+    def self.year_param_valid?(year)
+        (1900..Date.today.year).to_a.include?(year.to_i) or year == nil
     end
     
     def self.param_array(body)
