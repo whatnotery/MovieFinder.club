@@ -165,7 +165,7 @@ class Film < ApplicationRecord
         end
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
             r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{genre ? [genre] : ''} \n -------- \n #{data['overview']}"
-
+            r.message body: "https://www.youtube.com/results?search_query=#{data['title']}+#{data['release_date'].slice(0, 4)}+trailer"
         end
     end
 
