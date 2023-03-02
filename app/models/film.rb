@@ -165,14 +165,14 @@ class Film < ApplicationRecord
         end
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
             r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{genre ? [genre] : ''} \n -------- \n #{data['overview']}"
-            r.message body: "https://www.youtube.com/results?search_query=#{data['title']}+#{data['release_date'].slice(0, 4)}+trailer"
+            r.message body: "https://www.youtube.com/results?search_query=#{data['title'].gsub!(/[^0-9A-Za-z]/, ' ').split(' ').join('+')}+#{data['release_date'].slice(0, 4)}+trailer"
         end
     end
 
     def self.twiml_error()
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
             r.message body: 'Welcome to movie.sms'
-         #  r.message body: "use the syntax 'Movie' for a completely random film \n use 'Movie Genre:Action' for a random film from a selected genre \n use 'Movie Year:1999' for a random film from a selected year \n use'Movie Genre:Horror Year:1982' for a film from that year and genre \n Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Thriller, War, and Western"
+            r.message body: "use the syntax 'Movie' for a completely random film \n use 'Movie Genre:Action' for a random film from a selected genre \n use 'Movie Year:1999' for a random film from a selected year \n use'Movie Genre:Horror Year:1982' for a film from that year and genre \n Allowable genres are Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Thriller, War, and Western"
         end
     end
 end
