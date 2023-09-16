@@ -30,7 +30,7 @@ class Film < ApplicationRecord
         end
     end
 
-    def self.get_watch_providers(movie_id, country_code)
+    def self.get_watch_providers(movie_id, country_code = "US")
     api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
     base_url = "https://api.themoviedb.org/3/movie/#{movie_id}/watch/providers"
 
@@ -43,13 +43,14 @@ class Film < ApplicationRecord
     # Make the API request and parse the response JSON
     response = HTTP.get(base_url, params: query_params)
     response_body = response.parse if response.status == 200
-    byebug
     # Get the results for the specified country code
-    country_results = response_body["results"][country_code] if !response_body["results"].nil?
-
+    country_results = response_body["results"][country_code] unless response_body["results"].nil?
     # Extract the available providers from the results
-    if country_results && country_results["flatrate"]
-        providers = country_results["flatrate"].map { |provider| provider["provider_name"] }
+    if country_results
+        providers = {}
+        providers["streaming_providers"] = country_results["flatrate"].map { |provider| provider["provider_name"] } unless country_results["flatrate"].nil?
+        providers["rental_providers"] = country_results["buy"].map { |provider| provider["provider_name"] } unless  country_results["buy"].nil?
+
     else
         providers = nil
     end
@@ -57,6 +58,14 @@ class Film < ApplicationRecord
     # Return the list of available providers
     return providers
     end 
+
+    def self.parse_providers(providers)
+        return  "Not available to stream or rent in your region." if providers.nil?
+        parse_array = []
+        parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
+        parse_array << "Available to rent/buy on the following services:" + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
+        parse_array.join(" \\n ")
+    end
 
     def self.movie_valid?(data) 
         !data["title"].blank? and
@@ -153,7 +162,7 @@ class Film < ApplicationRecord
         id_lookup[:"#{id.to_s}"]
     end
 
-    def self.twiml(genre = nil, year = nil)
+    def self.twiml(genre = nil, year = nil, country = nil)
         if genre.nil? && year.nil?
             data = get_random_film()
         elsif genre_param_valid?(genre) && year.nil?
@@ -163,9 +172,12 @@ class Film < ApplicationRecord
         elsif !genre.nil? && !year.nil?
             data = get_random_film(genre, year)
         end
+        provider_message = parse_providers(get_watch_providers(data["id"]))
+
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
             r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{genre ? [genre] : ''} \n -------- \n #{data['overview']}"
             r.message body: "https://www.youtube.com/results?search_query=#{data['title'].gsub!(/[^0-9A-Za-z]/, ' ').split(' ').join('+')}+#{data['release_date'].slice(0, 4)}+trailer"
+            r.message body: "#{provider_message}"
         end
     end
 
