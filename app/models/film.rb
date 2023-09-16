@@ -64,7 +64,7 @@ class Film < ApplicationRecord
         parse_array = []
         parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
         parse_array << "Available to rent/buy on the following services:" + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
-        parse_array.join(" \\n ")
+        parse_array.join(" ")
     end
 
     def self.movie_valid?(data) 
