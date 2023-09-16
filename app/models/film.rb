@@ -63,7 +63,7 @@ class Film < ApplicationRecord
         return  "Not available to stream or rent in your region." if providers.nil?
         parse_array = []
         parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
-        parse_array << "Available to rent/buy on the following services:" + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
+        parse_array << "Available to rent/buy on the following services: " + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
         parse_array.join(" ")
     end
 
