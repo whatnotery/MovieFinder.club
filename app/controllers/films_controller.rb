@@ -4,7 +4,7 @@ class FilmsController < ApplicationController
         if params['genre'].present?
             render json: Film.get_random_film(params['genre'])
         else
-            render json: Film.get_random_film()
+            render json: Film.get_random_film
         end
     end
 

@@ -18,6 +18,8 @@ gem 'http'
 gem 'rack-cors'
 gem 'twilio-ruby'
 gem 'byebug'
+gem 'themoviedb-api'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 gem 'async'
@@ -50,3 +52,9 @@ group :development do
   # gem "spring"
 end
 
+
+gem "devise", "~> 4.9"
+
+gem "devise-api", "~> 0.1.3"
+
+gem "pry", "~> 0.14.2"
