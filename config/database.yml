@@ -81,6 +81,7 @@ test:
 #
 production:
   <<: *default
-  database: random_movie_production
-  username: random_movie
-  password: <%= ENV["RANDOM_MOVIE_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
+  database: <%= ENV["PGDATABASE"] %>
+  username: <%= ENV["PGUSER"]
+  password: <%= ENV["PGPASSWORD"] %>
