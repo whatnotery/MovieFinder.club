@@ -17,8 +17,10 @@ class Film < ApplicationRecord
             get_random_film(genre, year)
         else
             film_json = film.as_json["table"]
-            youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film_json['title'].gsub!(/[^0-9A-Za-z]/, ' ').split(' ').join('+')}+#{film_json['release_date'].slice(0, 4)}+trailer"}.as_json
-            film_json.merge(get_watch_providers(film_json["id"])).merge(youtube_link)
+            youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film_json['title'].split(' ').join('+')}+#{film_json['release_date'].slice(0, 4)}+trailer"}.as_json
+            watch_providers = get_watch_providers(film_json["id"])
+            film_json.merge(youtube_link)
+            film_json.merge(youtube_link).merge(watch_providers) if watch_providers
         end
     end
 
