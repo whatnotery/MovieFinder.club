@@ -34,6 +34,8 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
@@ -57,6 +59,7 @@ Rails.application.configure do
  
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
+  config.middleware.use ActionDispatch::Session::CookieStore, key: ENV['SESSION_STORE']
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true

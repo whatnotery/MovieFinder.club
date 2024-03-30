@@ -3,30 +3,22 @@ class Film < ApplicationRecord
     require 'twilio-ruby'
 
     def self.get_random_film(genre = nil, year = nil)
-        api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
-        base_url = "https://api.themoviedb.org/3/discover/movie"
-        random_page_number = rand(100)
-        # Build the query parameters based on the optional arguments
-        query_params = {
-            api_key: api_key,
+        query = {
             sort_by: "popularity.desc",
             include_adult: false,
             include_video: false,
-            page: random_page_number
+            page: rand(500)
         }
-        query_params[:primary_release_year] = year if year
-        query_params[:with_genres] = genre_id_lookup(genre) if genre
-        # Make the API request and parse the response JSON
-        response = HTTP.get(base_url, params: query_params)
-        response_body = response.parse if response.status == 200
-        # Get a random film from the results
-        films = response_body["results"]
-        random_film = films.sample
-        # Return the random film as a hash with relevant details
-        if random_film.nil? or !movie_valid?(random_film)
+        query[:primary_release_year] = year if year
+        query[:with_genres] = genre_id_lookup(genre) if genre
+        
+        film = Tmdb::Discover.movie(query).results.sample
+        unless film.present? && movie_valid?(film)
             get_random_film(genre, year)
         else
-            random_film
+            film_json = film.as_json["table"]
+            youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film_json['title'].gsub!(/[^0-9A-Za-z]/, ' ').split(' ').join('+')}+#{film_json['release_date'].slice(0, 4)}+trailer"}.as_json
+            film_json.merge(get_watch_providers(film_json["id"])).merge(youtube_link)
         end
     end
 
@@ -54,9 +46,7 @@ class Film < ApplicationRecord
     else
         providers = nil
     end
-
-    # Return the list of available providers
-    return providers
+         providers
     end 
 
     def self.parse_providers(providers)
@@ -67,11 +57,9 @@ class Film < ApplicationRecord
         parse_array.join(" ")
     end
 
-    def self.movie_valid?(data) 
-        !data["title"].blank? and
-        !data['poster_path'].blank? and
-        !data['overview'].blank? and
-        !data['release_date'].blank?
+    def self.movie_valid?(film)
+        film.title.present? && film.poster_path.present? &&
+        film.overview.present? && film.release_date.present?
     end
 
     def self.genre_param_valid?(genre)
@@ -95,11 +83,11 @@ class Film < ApplicationRecord
             'War', 
             'Western'
         ]
-        genre_list.include?(genre.try(:titleize)) or genre == nil
+        genre_list.include?(genre.try(:titleize)) || genre == nil
     end
 
     def self.year_param_valid?(year)
-        (1900..Date.today.year).to_a.include?(year.to_i) or year == nil
+        (1900..Date.today.year).to_a.include?(year.to_i) || year == nil
     end
     
     def self.param_array(body)
