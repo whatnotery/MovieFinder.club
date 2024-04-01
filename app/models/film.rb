@@ -25,7 +25,7 @@ class Film < ApplicationRecord
                 poster: film_json["poster_path"],
                 genres: film_json["genre_ids"]
                 )
-            add_providers_and_trailer_to_film(film)
+            with_providers_and_trailer(film)
         end
     end
 
