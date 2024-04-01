@@ -4,7 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :api
 
-         
+  has_many :likes
+  has_many :liked_films, through: :likes, source: :film     
+  
   def is_admin?
     is_admin
   end

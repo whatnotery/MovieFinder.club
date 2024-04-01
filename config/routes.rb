@@ -6,7 +6,13 @@ Rails.application.routes.draw do
     end
   end
   
-    get '/films' => "films#index"
-    post '/films' => 'films#twilio_response'
-
+  resources :films do
+    collection do
+      post '/twilio' => 'films#twilio_response'
+      get '/random' => "films#random"
+      post '/:id/like' => 'films#like'
+      post '/:id/unlike' => 'films#unlike'
+      get '/:id/liked_by' => 'films#liked_by'
+    end
+  end
 end

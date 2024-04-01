@@ -1,6 +1,6 @@
 class Film < ApplicationRecord
-    require 'http'
-    require 'twilio-ruby'
+    has_many :likes
+    has_many :liked_by_users, through: :likes, source: :user
 
     def self.get_random_film(genre = nil, year = nil)
         query = {
@@ -12,15 +12,20 @@ class Film < ApplicationRecord
         query[:primary_release_year] = year if year
         query[:with_genres] = genre_id_lookup(genre) if genre
         
-        film = Tmdb::Discover.movie(query).results.sample
-        unless film.present? && movie_valid?(film)
+        film_results = Tmdb::Discover.movie(query).results.sample
+        unless film_results.present? && movie_valid?(film_results)
             get_random_film(genre, year)
         else
-            film_json = film.as_json["table"]
-            youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film_json['title'].split(' ').join('+')}+#{film_json['release_date'].slice(0, 4)}+trailer"}.as_json
-            watch_providers = get_watch_providers(film_json["id"])
-            film_json.merge(youtube_link)
-            film_json.merge(youtube_link).merge(watch_providers) if watch_providers
+            film_json = film_results.as_json["table"]
+            film = Film.find_or_create_by(
+                mdb_id: film_json["id"], 
+                title: film_json["title"], 
+                year: film_json["release_date"].slice(0, 4), 
+                plot: film_json["overview"],
+                poster: film_json["poster_path"],
+                genres: film_json["genre_ids"]
+                )
+            add_providers_and_trailer_to_film(film)
         end
     end
 
@@ -58,6 +63,17 @@ class Film < ApplicationRecord
         parse_array << "Available to rent/buy on the following services: " + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
         parse_array.join(" ")
     end
+
+   def self.with_providers_and_trailer(film)
+        film = film.as_json
+        youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film['title'].split(' ').join('+')}+#{film["year"]}+trailer"}.as_json
+        watch_providers = get_watch_providers(film["mdb_id"])
+        if watch_providers
+            film.merge(youtube_link).merge(watch_providers) 
+        else
+            film.merge(youtube_link)
+        end
+   end
 
     def self.movie_valid?(film)
         film.title.present? && film.poster_path.present? &&
@@ -153,15 +169,10 @@ class Film < ApplicationRecord
     end
 
     def self.twiml(genre = nil, year = nil, country = nil)
-        if genre.nil? && year.nil?
-            data = get_random_film()
-        elsif genre_param_valid?(genre) && year.nil?
-            data = get_random_film(genre)
-        elsif genre.nil? && !year.nil? 
-            data = get_random_film(genre, year)
-        elsif !genre.nil? && !year.nil?
-            data = get_random_film(genre, year)
-        end
+        data = get_random_film() if genre.nil? && year.nil?
+        data = get_random_film(genre) if genre_param_valid?(genre) && year.nil?
+        data = get_random_film(genre, year) if genre.nil? && !year.nil? 
+        data = get_random_film(genre, year) if genre.present? && year.present?
         provider_message = parse_providers(get_watch_providers(data["id"]))
 
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
