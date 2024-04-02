@@ -1,5 +1,5 @@
 class Film < ApplicationRecord
-    has_may :reviews
+    has_many :reviews
     has_many :likes
     has_many :liked_by_users, through: :likes, source: :user
 
