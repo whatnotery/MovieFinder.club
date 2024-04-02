@@ -120,6 +120,9 @@ class Film < ApplicationRecord
         hash
     end
 
+    def genre_array_to_list(array)
+        array.map{ |genre_id| genre_from_id_lookup(genre_id).join(", ")}
+    end
 
     def genre_id_lookup(genre_name) 
         genre_lookup = {
@@ -171,8 +174,8 @@ class Film < ApplicationRecord
 
     def self.twiml(film)
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{film['title']} (#{film['year'])}) #{genre ? [genre] : ''} \n -------- \n #{film['overview']}"
-            r.message body: "#{film['youtube_link']
+            r.message body: "#{film['title']} (#{film['year'])}) #{film[genre].any? ? [genre_array_to_list(genre)] : ''} \n -------- \n #{film['overview']}"
+            r.message body: "#{film['youtube_link']}"
             r.message body: "#{parse_providers(get_watch_providers(film["mdb_id"]))}"
         end
     end

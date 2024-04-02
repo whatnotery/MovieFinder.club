@@ -2,9 +2,9 @@ class FilmsController < ApplicationController
     skip_before_action :verify_authenticity_token, raise: false  
     before_action :authenticate_devise_api_token!, only: %i[like unlike]
     before_action :set_film, only: %i[show like unlike liked_by]
+    
     def index
         render json: Film.all.order(:year).order(:title).map { |film| Film.with_providers_and_trailer(film) }
-
     end
 
     def show
@@ -42,25 +42,19 @@ class FilmsController < ApplicationController
     end
 
     def twilio_response
-        params_array = Film.param_array(params['Body'])
-        args = Film.get_random_film_args(params_array)
-        if !params_array.include?("movie") or !Film.genre_param_valid?(args["genre"]) && !Film.year_param_valid?(args["year"])
-            render xml: Film.twiml_error()
-        elsif params_array.include?('movie') && params_array.length == 1
-            render xml: Film.twiml()
-        elsif params_array.include?("movie") && params_array.include?('genre') && params_array.include?('year') && Film.genre_param_valid?(args["genre"]) && Film.year_param_valid?(args["year"])
-            render xml: Film.twiml(args["genre"], args["year"])
-        elsif params_array.include?("movie") && params_array.include?('genre') && Film.genre_param_valid?(args["genre"])
-            render xml: Film.twiml(args["genre"])
-        elsif params_array.include?("movie") && params_array.include?('year') 
-            render xml: Film.twiml(nil, args["year"])
-        else
-            render xml: Film.twiml_error()
-        end
+        text_body = Film.param_array(params['Body'])
+        film = Film.get_random_film_film(text_body)
+
+        render xml: Film.twiml_error() unless text_body.include?("movie") or Film.genre_param_valid?(film["genre"]) && Film.year_param_valid?(film["year"])
+        render xml: Film.twiml() if text_body.include?('movie') && text_body.length == 1
+        render xml: Film.twiml(film["genre"], film["year"]) if text_body.include?("movie") && text_body.include?('genre') && text_body.include?('year') && Film.genre_param_valid?(film["genre"]) && Film.year_param_valid?(film["year"])
+        render xml: Film.twiml(film["genre"]) if text_body.include?("movie") && text_body.include?('genre') && Film.genre_param_valid?(film["genre"])
+        render xml: Film.twiml(nil, film["year"]) if params.include?("movie") && params.include?('year') 
     end
+    private
 
     def set_film
-        @film = Tmdb::Movie.detail(params["id"])
+        @film = Tmdb::Movie.detail(params[:id])
         @film = Film.find_or_create_by(
                     mdb_id: @film["id"],
                     title: @film["title"], 
