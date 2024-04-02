@@ -8,10 +8,10 @@ class User < ApplicationRecord
   has_many :likes
   has_many :liked_films, through: :likes, source: :film     
 
-  validate :no_current_user_as_user_name
+  validate :user_name, :no_current_user_as_user_name
 
   def no_current_user_as_user_name
-    errors.add(:user_name, :exclusion) if user_name.include?("current_user")
+    errors.add(:user_name, :exclusion) if "current_user".include?(:user_name.to_s)
   end
 
   def is_admin?
