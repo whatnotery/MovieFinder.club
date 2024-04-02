@@ -1,4 +1,5 @@
 class Film < ApplicationRecord
+    has_may :reviews
     has_many :likes
     has_many :liked_by_users, through: :likes, source: :user
 
@@ -29,7 +30,7 @@ class Film < ApplicationRecord
         end
     end
 
-    def self.get_watch_providers(movie_id, country_code = "US")
+    def get_watch_providers(movie_id, country_code = "US")
     api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
     base_url = "https://api.themoviedb.org/3/movie/#{movie_id}/watch/providers"
 
@@ -56,7 +57,7 @@ class Film < ApplicationRecord
          providers
     end 
 
-    def self.parse_providers(providers)
+    def parse_providers(providers)
         return  "Not available to stream or rent in your region." if providers.nil?
         parse_array = []
         parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
@@ -75,7 +76,7 @@ class Film < ApplicationRecord
         end
    end
 
-    def self.movie_valid?(film)
+    def movie_valid?(film)
         film.title.present? && film.poster_path.present? &&
         film.overview.present? && film.release_date.present?
     end
@@ -104,7 +105,7 @@ class Film < ApplicationRecord
         genre_list.include?(genre.try(:titleize)) || genre == nil
     end
 
-    def self.year_param_valid?(year)
+    def year_param_valid?(year)
         (1900..Date.today.year).to_a.include?(year.to_i) || year == nil
     end
     
@@ -120,7 +121,7 @@ class Film < ApplicationRecord
     end
 
 
-    def self.genre_id_lookup(genre_name) 
+    def genre_id_lookup(genre_name) 
         genre_lookup = {
             "Action": 28,
             "Adventure": 12,
@@ -144,7 +145,7 @@ class Film < ApplicationRecord
         genre_lookup[:"#{genre_name.titleize}"]
     end
 
-    def self.genre_from_id_lookup(id)
+    def genre_from_id_lookup(id)
         id_lookup = {
             "12": "Adventure",
             "14": "Fantasy",
@@ -168,17 +169,11 @@ class Film < ApplicationRecord
         id_lookup[:"#{id.to_s}"]
     end
 
-    def self.twiml(genre = nil, year = nil, country = nil)
-        data = get_random_film() if genre.nil? && year.nil?
-        data = get_random_film(genre) if genre_param_valid?(genre) && year.nil?
-        data = get_random_film(genre, year) if genre.nil? && !year.nil? 
-        data = get_random_film(genre, year) if genre.present? && year.present?
-        provider_message = parse_providers(get_watch_providers(data["id"]))
-
+    def self.twiml(film)
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{data['title']} (#{data['release_date'].slice(0, 4)}) #{genre ? [genre] : ''} \n -------- \n #{data['overview']}"
-            r.message body: "https://www.youtube.com/results?search_query=#{data['title'].gsub!(/[^0-9A-Za-z]/, ' ').split(' ').join('+')}+#{data['release_date'].slice(0, 4)}+trailer"
-            r.message body: "#{provider_message}"
+            r.message body: "#{film['title']} (#{film['year'])}) #{genre ? [genre] : ''} \n -------- \n #{film['overview']}"
+            r.message body: "#{film['youtube_link']
+            r.message body: "#{parse_providers(get_watch_providers(film["mdb_id"]))}"
         end
     end
 
