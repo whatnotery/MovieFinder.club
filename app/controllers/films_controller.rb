@@ -44,21 +44,19 @@ class FilmsController < ApplicationController
 
 
     def random
-        render json: Film.get_random_film(params["genre"], params["year"]) if params["genre"].present? && params["year"].present?
-        render json: Film.get_random_film(params["genre"]) if params["genre"].present? && params["year"].nil?
-        render json: Film.get_random_film(nil, params["year"]) if params["genre"].nil? && params["year"].present? 
-        render json: Film.get_random_film if params["genre"].nil? && params["year"].nil?
+        render json: Film.get_random_film(params["genre"], params["year"])
     end
 
     def twilio_response
         text_body = Film.param_array(params['Body'])
-        film = Film.get_random_film(text_body)
+        args = Film.get_random_film_args(text_body)
+        
+        if text_body.include?("movie") && Film.genre_param_valid?(args['genre']) && Film.year_param_valid?(args['year'])
+            film= Film.get_random_film(args['genre'], args['year']) 
+        end
 
-        render xml: Film.twiml_error() unless text_body.include?("movie") or Film.genre_param_valid?(film["genre"]) && Film.year_param_valid?(film["year"])
-        render xml: Film.twiml() if text_body.include?('movie') && text_body.length == 1
-        render xml: Film.twiml(film["genre"], film["year"]) if text_body.include?("movie") && text_body.include?('genre') && text_body.include?('year') && Film.genre_param_valid?(film["genre"]) && Film.year_param_valid?(film["year"])
-        render xml: Film.twiml(film["genre"]) if text_body.include?("movie") && text_body.include?('genre') && Film.genre_param_valid?(film["genre"])
-        render xml: Film.twiml(nil, film["year"]) if params.include?("movie") && params.include?('year') 
+        render xml: Film.twiml_error() unless film
+        render xml: Film.twiml(film) if film
     end
     private
 
