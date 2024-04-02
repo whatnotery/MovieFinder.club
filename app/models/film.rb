@@ -3,6 +3,8 @@ class Film < ApplicationRecord
     has_many :likes
     has_many :liked_by_users, through: :likes, source: :user
 
+    validates :mdb_id, uniqueness: true
+
     def self.get_random_film(genre = nil, year = nil)
         query = {
             sort_by: "popularity.desc",
@@ -11,7 +13,6 @@ class Film < ApplicationRecord
             page: rand(500)
         }
         query[:primary_release_year] = year if year
-        bindin.pry
         query[:with_genres] = genre_id_lookup(genre) if genre
         
         film_results = Tmdb::Discover.movie(query).results.sample

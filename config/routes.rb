@@ -1,18 +1,26 @@
 Rails.application.routes.draw do
   devise_for :users
+  
   resources :users do
     collection do
       get 'current_user', to: 'users#current_user'
+      get '/:id/likes', to: 'users#likes'
+      get '/:id/reviews', to: 'users#reviews'
     end
   end
   
-  resources :films do
+  resources :films, only: [:index, :show]  do
     collection do
-      post '/twilio' => 'films#twilio_response'
-      get '/random' => "films#random"
-      post '/:id/like' => 'films#like'
-      post '/:id/unlike' => 'films#unlike'
-      get '/:id/liked_by' => 'films#liked_by'
+      post '/twilio', to: 'films#twilio_response'
+      get '/random', to: "films#random"
+      post '/:id/like', to: 'films#like'
+      post '/:id/unlike', to: 'films#unlike'
+      get '/:id/liked_by', to: 'films#liked_by'
+      post '/:id/reviews', to: 'reviews#create'
+      get '/:id/reviews', to: 'reviews#index'
+      get '/:id/reviews/:review_id', to: 'reviews#show' 
+      get '/recently_reviewed', to: 'films#recently_reviewed'
+      get '/recently_discovered', to: 'films#recently_discovered'
     end
   end
 end

@@ -34,6 +34,15 @@ class FilmsController < ApplicationController
         render json: @film.liked_by_users
     end
 
+    def recently_discovered
+        render json: Film.order('created_at DESC').limit(50)
+    end
+
+    def recently_reviewed
+       render json: Film.joins(:reviews).order('reviews.created_at DESC').uniq.limit(50)
+    end
+
+
     def random
         render json: Film.get_random_film(params["genre"], params["year"]) if params["genre"].present? && params["year"].present?
         render json: Film.get_random_film(params["genre"]) if params["genre"].present? && params["year"].nil?
@@ -55,7 +64,9 @@ class FilmsController < ApplicationController
 
     def set_film
         @film = Tmdb::Movie.detail(params[:id])
-        @film = Film.find_or_create_by(
+        
+        unless Film.find_by(mdb_id: params[:id])
+          @film = Film.create(
                     mdb_id: @film["id"],
                     title: @film["title"], 
                     year: @film["release_date"].slice(0, 4), 
@@ -63,5 +74,8 @@ class FilmsController < ApplicationController
                     poster: @film["poster_path"],
                     genres: @film["genre_ids"]
                     )
-    end
+        else
+          @film = Film.find_by(mdb_id: params[:id])
+        end
+      end
 end
