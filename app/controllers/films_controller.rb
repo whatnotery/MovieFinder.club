@@ -43,7 +43,7 @@ class FilmsController < ApplicationController
 
     def twilio_response
         text_body = Film.param_array(params['Body'])
-        film = Film.get_random_film_film(text_body)
+        film = Film.get_random_film(text_body)
 
         render xml: Film.twiml_error() unless text_body.include?("movie") or Film.genre_param_valid?(film["genre"]) && Film.year_param_valid?(film["year"])
         render xml: Film.twiml() if text_body.include?('movie') && text_body.length == 1
