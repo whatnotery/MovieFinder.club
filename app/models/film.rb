@@ -11,6 +11,7 @@ class Film < ApplicationRecord
             page: rand(500)
         }
         query[:primary_release_year] = year if year
+        bindin.pry
         query[:with_genres] = genre_id_lookup(genre) if genre
         
         film_results = Tmdb::Discover.movie(query).results.sample
@@ -30,7 +31,7 @@ class Film < ApplicationRecord
         end
     end
 
-    def get_watch_providers(movie_id, country_code = "US")
+    def self.get_watch_providers(movie_id, country_code = "US")
     api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
     base_url = "https://api.themoviedb.org/3/movie/#{movie_id}/watch/providers"
 
@@ -57,7 +58,7 @@ class Film < ApplicationRecord
          providers
     end 
 
-    def parse_providers(providers)
+    def self.parse_providers(providers)
         return  "Not available to stream or rent in your region." if providers.nil?
         parse_array = []
         parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
@@ -76,7 +77,7 @@ class Film < ApplicationRecord
         end
    end
 
-    def movie_valid?(film)
+    def self.movie_valid?(film)
         film.title.present? && film.poster_path.present? &&
         film.overview.present? && film.release_date.present?
     end
@@ -105,7 +106,7 @@ class Film < ApplicationRecord
         genre_list.include?(genre.try(:titleize)) || genre == nil
     end
 
-    def year_param_valid?(year)
+    def self.year_param_valid?(year)
         (1900..Date.today.year).to_a.include?(year.to_i) || year == nil
     end
     
@@ -120,11 +121,11 @@ class Film < ApplicationRecord
         hash
     end
 
-    def genre_array_to_list(array)
+    def self.genre_array_to_list(array)
         array.map{ |genre_id| genre_from_id_lookup(genre_id).join(", ")}
     end
 
-    def genre_id_lookup(genre_name) 
+    def self.genre_id_lookup(genre_name) 
         genre_lookup = {
             "Action": 28,
             "Adventure": 12,
@@ -148,7 +149,7 @@ class Film < ApplicationRecord
         genre_lookup[:"#{genre_name.titleize}"]
     end
 
-    def genre_from_id_lookup(id)
+    def self.genre_from_id_lookup(id)
         id_lookup = {
             "12": "Adventure",
             "14": "Fantasy",
