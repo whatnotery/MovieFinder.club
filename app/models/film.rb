@@ -25,14 +25,19 @@ class Film < ApplicationRecord
     end
 
     def self.search(query)
-        Tmdb::Search.movie(query).table[:results].map{ |film| find_or_create_film(film.table.as_json) if movie_valid?(film.table.as_json)}.compact
+
+        if Film.find_by(title: query.titleize).present?
+           return with_providers_and_trailer(Film.find_by(title: query.titleize)) 
+        else
+            Tmdb::Search.movie(query.titleize).table[:results].map{ |film| find_or_create_film(film.table.as_json) if movie_valid?(film.table.as_json)}.compact
+        end
     end
 
     def self.find_or_create_film(film_json)
         unless Film.find_by(mdb_id: film_json["id"])
             film = Film.create(
                 mdb_id: film_json["id"],
-                title: film_json["title"], 
+                title: film_json["title"].titleize, 
                 year: film_json["release_date"].slice(0, 4), 
                 plot: film_json["overview"],
                 poster: film_json["poster_path"],

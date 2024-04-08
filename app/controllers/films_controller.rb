@@ -56,7 +56,7 @@ class FilmsController < ApplicationController
         args = Film.get_random_film_args(text_body)
         search_args = params['Body'].downcase.sub("search", "").strip
         if text_body.include?("search")
-            render xml: Film.twiml(Film.search(search_args).first(3))
+            render xml: Film.twiml(Film.search(search_args.titleize).first(3))
         end
         if text_body.include?("movie") && Film.genre_param_valid?(args['genre']) && Film.year_param_valid?(args['year'])
             film= Film.get_random_film(args['genre'], args['year']) 
@@ -72,7 +72,7 @@ class FilmsController < ApplicationController
         unless Film.find_by(mdb_id: params[:id])
             @film = Film.create(
                     mdb_id: @film["id"],
-                    title: @film["title"], 
+                    title: @film["title"].titleize, 
                     year: @film["release_date"].slice(0, 4), 
                     plot: @film["overview"],
                     poster: @film["poster_path"],
