@@ -77,7 +77,7 @@ class Film < ApplicationRecord
     end 
 
     def self.parse_providers(providers)
-        return  "Not available to stream or rent in your region." if providers.nil?
+        return  "Not available to stream or rent in your region." unless providers["streaming_providers"].present? || providers["rental_providers"].present?
         parse_array = []
         parse_array << "Available to stream on the following services: " + providers["streaming_providers"].each(&:to_s).join(", ") + "." if providers["streaming_providers"].present?
         parse_array << "Available to rent/buy on the following services: " + providers["rental_providers"].each(&:to_s).join(", ") + "." if providers["rental_providers"].present?
@@ -196,7 +196,7 @@ class Film < ApplicationRecord
             films.each do |film|
                 r.message body: "#{film['title']} (#{film['year']}) #{film['genres'].any? ? genre_array_to_list(film['genres']) : ''} \n -------- \n #{film['plot']}"
                 r.message body: "#{film['youtube_link']}"
-                r.message body: "#{parse_providers({"streaming_providers": film["streaming_providers"], "rental_providers": film["rental_providers"]}.as_json)}"
+                (r.message body: "#{parse_providers({"streaming_providers": film["streaming_providers"], "rental_providers": film["rental_providers"]}.as_json)}") if (film["rental_providers"] || film["streaming_providers"])
             end
         end
     end
