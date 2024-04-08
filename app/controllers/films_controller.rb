@@ -47,16 +47,22 @@ class FilmsController < ApplicationController
         render json: Film.get_random_film(params["genre"], params["year"])
     end
 
+    def search
+        render json: Film.search(params["query"])
+    end
+
     def twilio_response
         text_body = Film.param_array(params['Body'])
         args = Film.get_random_film_args(text_body)
-        
+        search_args = params['Body'].downcase.sub("search", "").strip
+        if text_body.include?("search")
+            render xml: Film.twiml(Film.search(search_args).first(3))
+        end
         if text_body.include?("movie") && Film.genre_param_valid?(args['genre']) && Film.year_param_valid?(args['year'])
             film= Film.get_random_film(args['genre'], args['year']) 
+            render xml: Film.twiml_error() unless film
+            render xml: Film.twiml([film]) if film
         end
-
-        render xml: Film.twiml_error() unless film
-        render xml: Film.twiml(film) if film
     end
     private
 
@@ -64,7 +70,7 @@ class FilmsController < ApplicationController
         @film = Tmdb::Movie.detail(params[:id])
         
         unless Film.find_by(mdb_id: params[:id])
-          @film = Film.create(
+            @film = Film.create(
                     mdb_id: @film["id"],
                     title: @film["title"], 
                     year: @film["release_date"].slice(0, 4), 
@@ -73,7 +79,7 @@ class FilmsController < ApplicationController
                     genres: @film["genre_ids"]
                     )
         else
-          @film = Film.find_by(mdb_id: params[:id])
+            @film = Film.find_by(mdb_id: params[:id])
         end
-      end
+    end
 end

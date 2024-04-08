@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     collection do
       post '/twilio', to: 'films#twilio_response'
       get '/random', to: "films#random"
+      get '/search', to: "films#search"
       post '/:id/like', to: 'films#like'
       post '/:id/unlike', to: 'films#unlike'
       get '/:id/liked_by', to: 'films#liked_by'

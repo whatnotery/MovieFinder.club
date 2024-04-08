@@ -20,17 +20,30 @@ class Film < ApplicationRecord
             get_random_film(genre, year)
         else
             film_json = film_results.as_json["table"]
-            film = Film.find_or_create_by(
-                mdb_id: film_json["id"], 
+            find_or_create_film(film_json)
+        end
+    end
+
+    def self.search(query)
+        Tmdb::Search.movie(query).table[:results].map{ |film| find_or_create_film(film.table.as_json) if movie_valid?(film.table.as_json)}.compact
+    end
+
+    def self.find_or_create_film(film_json)
+        unless Film.find_by(mdb_id: film_json["id"])
+            film = Film.create(
+                mdb_id: film_json["id"],
                 title: film_json["title"], 
                 year: film_json["release_date"].slice(0, 4), 
                 plot: film_json["overview"],
                 poster: film_json["poster_path"],
                 genres: film_json["genre_ids"]
                 )
-            with_providers_and_trailer(film)
+        else
+            film = Film.find_by(mdb_id: film_json["id"])
         end
+        with_providers_and_trailer(film)
     end
+
 
     def self.get_watch_providers(movie_id, country_code = "US")
     api_key = ENV['MOVIE_DB_API_KEY'] # replace with your own TMDb API key
@@ -46,7 +59,7 @@ class Film < ApplicationRecord
     response = HTTP.get(base_url, params: query_params)
     response_body = response.parse if response.status == 200
     # Get the results for the specified country code
-    country_results = response_body["results"][country_code] unless response_body["results"].nil?
+    country_results = response_body["results"][country_code] unless response_body["results"].blank?
     # Extract the available providers from the results
     if country_results
         providers = {}
@@ -70,7 +83,7 @@ class Film < ApplicationRecord
    def self.with_providers_and_trailer(film)
         film = film.as_json
         youtube_link = {"youtube_link": "https://www.youtube.com/results?search_query=#{film['title'].split(' ').join('+')}+#{film["year"]}+trailer"}.as_json
-        watch_providers = get_watch_providers(film["mdb_id"])
+        watch_providers = get_watch_providers(film["mdb_id"] || film["id"])
         if watch_providers
             film.merge(youtube_link).merge(watch_providers) 
         else
@@ -79,8 +92,8 @@ class Film < ApplicationRecord
    end
 
     def self.movie_valid?(film)
-        film.title.present? && film.poster_path.present? &&
-        film.overview.present? && film.release_date.present?
+        film["title"].present? && film["poster_path"].present? &&
+        film["overview"].present? && film["release_date"].present?
     end
 
     def self.genre_param_valid?(genre)
@@ -174,11 +187,13 @@ class Film < ApplicationRecord
         id_lookup[:"#{id.to_s}"]
     end
 
-    def self.twiml(film)
+    def self.twiml(films)
         twiml = Twilio::TwiML::MessagingResponse.new do |r|
-            r.message body: "#{film['title']} (#{film['year']}) #{film['genres'].any? ? genre_array_to_list(film['genres']) : ''} \n -------- \n #{film['plot']}"
-            r.message body: "#{film['youtube_link']}"
-            r.message body: "#{parse_providers(get_watch_providers(film["mdb_id"]))}"
+            films.each do |film|
+                r.message body: "#{film['title']} (#{film['year']}) #{film['genres'].any? ? genre_array_to_list(film['genres']) : ''} \n -------- \n #{film['plot']}"
+                r.message body: "#{film['youtube_link']}"
+                r.message body: "#{parse_providers({"streaming_providers": film["streaming_providers"], "rental_providers": film["rental_providers"]}.as_json)}"
+            end
         end
     end
 
