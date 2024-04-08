@@ -25,9 +25,8 @@ class Film < ApplicationRecord
     end
 
     def self.search(query)
-
-        if Film.find_by(title: query.titleize).present?
-           return with_providers_and_trailer(Film.find_by(title: query.titleize)) 
+        if Film.where(title: query.titleize).present?
+           Film.where(title: query.titleize).map { |film| with_providers_and_trailer(film) } 
         else
             Tmdb::Search.movie(query.titleize).table[:results].map{ |film| find_or_create_film(film.table.as_json) if movie_valid?(film.table.as_json)}.compact
         end
