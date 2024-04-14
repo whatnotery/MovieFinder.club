@@ -1,4 +1,2 @@
-providers = ['ruby', 'node']
-
 [phases.build]
 cmds = ['...', 'rails db:migrate']
