@@ -19,7 +19,8 @@ gem 'rack-cors'
 gem 'twilio-ruby'
 gem 'byebug'
 gem 'themoviedb-api'
-
+gem "vite_rails"
+gem 'inertia_rails'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 gem 'async'
@@ -39,7 +40,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem "rack-cors"
+ gem "rack-cors"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -54,7 +55,4 @@ end
 
 
 gem "devise", "~> 4.9"
-
-gem "devise-api", "~> 0.1.3"
-
 gem "pry", "~> 0.14.2"

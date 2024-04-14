@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { sessions: 'users/sessions' }
   
+  root "static#home"
+  get '/csrf_token', to: 'application#csrf_token'
+
   resources :users do
     collection do
       get 'current_user', to: 'users#current_user'

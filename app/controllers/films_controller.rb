@@ -1,6 +1,5 @@
 class FilmsController < ApplicationController
-    skip_before_action :verify_authenticity_token, raise: false  
-    before_action :authenticate_devise_api_token!, only: %i[like unlike]
+    before_action :authenticate_user!, only: %i[random like unlike]
     before_action :set_film, only: %i[show like unlike liked_by]
     
     def index
@@ -44,7 +43,7 @@ class FilmsController < ApplicationController
 
 
     def random
-        render json: Film.get_random_film(params["genre"], params["year"])
+        render inertia: "pages/randomFilm"
     end
 
     def search

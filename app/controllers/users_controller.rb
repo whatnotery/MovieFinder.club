@@ -1,8 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :verify_authenticity_token, raise: false  
-  before_action :authenticate_devise_api_token!
   before_action :set_user, only: %i[ show update destroy likes reviews ]
-  before_action :authorize_admin! , only: %i[index show]
+  before_action :authorize_admin! , only: %i[index]
 
 
   # GET /users
@@ -32,7 +30,7 @@ class UsersController < ApplicationController
   end
 
   def current_user
-    render json: current_devise_api_user
+    render json: current_user
   end
 
   def likes
