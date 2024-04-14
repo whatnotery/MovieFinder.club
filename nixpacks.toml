@@ -1,4 +1,4 @@
 [phases.build]
 cmds = ['...', 'rails db:migrate']
 [start]
-cmds = ['...', 'bin/vite dev']
+cmds = 'foreman start'
