@@ -1,4 +1,4 @@
 [phases.build]
 cmds = ['...', 'rails db:migrate']
-[phases.start]
+[phases.node:start]
 cmds = ['...', 'bin/vite dev']
