@@ -34,7 +34,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_url_options = {host: "localhost", port: 3000}
 
   config.action_mailer.raise_delivery_errors = false
 
@@ -55,11 +55,11 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  #config.hosts << "18e6-2603-6010-d100-2536-90eb-d1c5-4936-d43d.ngrok.io"
- 
+  # config.hosts << "18e6-2603-6010-d100-2536-90eb-d1c5-4936-d43d.ngrok.io"
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
-  config.middleware.use ActionDispatch::Session::CookieStore, key: ENV['SESSION_STORE']
+  config.middleware.use ActionDispatch::Session::CookieStore, key: ENV["SESSION_STORE"]
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true

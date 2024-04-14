@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy likes reviews ]
-  before_action :authorize_admin! , only: %i[index]
-
+  before_action :set_user, only: %i[show update destroy likes reviews]
+  before_action :authorize_admin!, only: %i[index]
 
   # GET /users
   def index
@@ -47,17 +46,17 @@ class UsersController < ApplicationController
     else
       head :no_content
     end
-    
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find_by(user_name: params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.require(:user).permit(:user_name, :first_name, :last_name, :phone, :is_admin)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find_by(user_name: params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def user_params
+    params.require(:user).permit(:user_name, :first_name, :last_name, :phone, :is_admin)
+  end
 end

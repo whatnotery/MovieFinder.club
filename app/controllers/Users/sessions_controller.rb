@@ -2,17 +2,16 @@
 
 class Users::SessionsController < Devise::SessionsController
   # before_action :configure_sign_in_params, only: [:create]
-  
 
   # GET /resource/sign_in
   def new
-      render inertia: 'pages/SignIn'
+    render inertia: "pages/SignIn"
   end
 
   # POST /resource/sign_in
-   def create
-    redirect_to random_films_path	
-   end
+  def create
+    redirect_to random_films_path
+  end
 
   # DELETE /resource/sign_out
   # def destroy
