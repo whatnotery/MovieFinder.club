@@ -1,2 +1,4 @@
 [phases.build]
 cmds = ['...', 'rails db:migrate']
+[phases.install]
+cmds = ['...', 'gem install foreman']

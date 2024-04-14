@@ -21,7 +21,6 @@ gem "byebug"
 gem "themoviedb-api"
 gem "vite_rails"
 gem "inertia_rails"
-gem "foreman"
 gem "devise", "~> 4.9"
 gem "standardrb"
 # Use Redis adapter to run Action Cable in production
