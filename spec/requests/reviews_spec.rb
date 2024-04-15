@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Reviews", type: :request do
   describe "GET /index" do
@@ -35,5 +35,4 @@ RSpec.describe "Reviews", type: :request do
       expect(response).to have_http_status(:success)
     end
   end
-
 end
