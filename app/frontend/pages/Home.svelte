@@ -1,8 +1,5 @@
-<script>
-  import Layout from "../layouts/Main.svelte";
-
-  export let name;
-</script>
-
-<h1>Welcome</h1>
-<p>Hello {name}!</p>
+<h1>Welcome to MovieFinder.Club</h1>
+<p>
+    We're an online space to find new films, as well as like them (and soon,
+    rate and review them!)
+</p>

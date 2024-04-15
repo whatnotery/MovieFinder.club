@@ -4,5 +4,5 @@ class Like < ApplicationRecord
 
   validates :user, :film, presence: true
 
-  validates :user_id, uniqueness: {scope: :film_id, message: "film has already been liked"}
+  validates :user_id, uniqueness: {scope: :film_id}
 end

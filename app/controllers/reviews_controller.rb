@@ -14,7 +14,7 @@ class ReviewsController < ApplicationController
 
   # POST /reviews
   def create
-    @review = @film.reviews.create(review_params.merge(user: current_devise_api_user))
+    @review = @film.reviews.create(review_params.merge(user: current_user))
 
     if @review.save
       render json: @review, status: :created
@@ -25,7 +25,7 @@ class ReviewsController < ApplicationController
 
   # PATCH/PUT /reviews/1
   def update
-    if @review.update(review_params) && @review.user == current_devise_api_user
+    if @review.update(review_params) && @review.user == current_user
       render json: @review
     else
       render json: @review.errors, status: :unprocessable_entity
@@ -34,7 +34,7 @@ class ReviewsController < ApplicationController
 
   # DELETE /reviews/1
   def destroy
-    @review.destroy if @review.user == current_devise_api_user
+    @review.destroy if @review.user == current_user
   end
 
   private

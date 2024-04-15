@@ -5,18 +5,24 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
-    render inertia: "pages/SignIn"
+    render inertia: "pages/signIn"
   end
 
   # POST /resource/sign_in
   def create
-    redirect_to random_films_path
+    super
+    # Your custom code after calling super
+    if current_user
+      puts "User #{current_user.email} logged in successfully"
+    else
+      puts "Login failed"
+    end
   end
 
   # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
+  def destroy
+    super
+  end
 
   # protected
 

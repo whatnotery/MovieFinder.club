@@ -1,8 +1,15 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  def csrf_token
-    render json: {csrfToken: form_authenticity_token}, status: :ok
+  def after_sign_in_path_for(resource)
+    # Customize the redirect path based on your requirements
+    if resource.is_a?(User)
+      # Redirect to a specific page for users
+      discover_path
+    else
+      # Default redirect path
+      super
+    end
   end
 
   private
@@ -16,6 +23,6 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :first_name, :last_name, :phone, :is_admin])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :first_name, :last_name])
   end
 end
