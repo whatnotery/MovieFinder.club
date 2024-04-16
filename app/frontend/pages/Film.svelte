@@ -1,7 +1,8 @@
 <script>
     export let filmData = {};
+    export let liked;
     import { onMount } from "svelte";
-    import Like from "../components/Like.svelte";
+    import LikeUnlike from "../components/LikeUnlike.svelte";
     import axios from "axios";
     import { currentUser } from "../lib/auth";
     let userPromise = currentUser();
@@ -50,7 +51,7 @@
                             >Discover New Film</button
                         >
 
-                        <Like filmId={filmData.mdb_id} />
+                        <LikeUnlike filmId={filmData.mdb_id} {liked} />
                     {/if}
                     <p>{filmData.plot}</p>
                     <b>Streaming Providers:</b>

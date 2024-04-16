@@ -7,11 +7,11 @@ class FilmsController < ApplicationController
   end
 
   def show
-    render inertia: "pages/Film", props: {filmData: Film.with_providers_and_trailer(@film)}
+    render inertia: "pages/Film", props: {filmData: Film.with_providers_and_trailer(@film), liked: @film.liked_by_users.include?(current_user)}
   end
 
   def like
-    @like = Like.new(film: @film, mdb_id: @film.mdb_id, user_id: current_user.id)
+    @like = Like.new(film: @film, mdb_id: @film.mdb_id, user: current_user)
 
     if @like.save
       render json: {body: "#{@film.title} successfully liked by #{current_user.user_name}", status: 200}
@@ -21,11 +21,29 @@ class FilmsController < ApplicationController
   end
 
   def unlike
-    @like = Like.find_by(film_id: @film.mdb_id, user: current__user.id)
+    @like = Like.find_by(film: @film, mdb_id: @film.mdb_id, user: current_user)
     if @like&.destroy
       render json: {message: "#{@film.title} successfully unliked by #{current_user.user_name}", status: 200}
     else
       render json: {errors: "#{@film.title} is not liked by #{current_user.user_name}"}, status: :unprocessable_entity
+    end
+  end
+
+  def favorite
+    @favorite = Favorite.new(film: @film, mdb_id: @film.mdb_id, user: current_user)
+    if @favorite.save
+      render json: {body: "#{@film.title} successfully favorited by #{current_user.user_name}", status: 200}
+    else
+      render json: {body: "#{@film.title} is already favorited by #{current_user.user_name}"}, status: :unprocessable_entity
+    end
+  end
+
+  def unfavorite
+    @favorite = Favorite.find_by(film: @film, mdb_id: @film.mdb_id, user: current_user)
+    if @favorite&.destroy
+      render json: {body: "#{@film.title} successfully unfavorited by #{current_user.user_name}", status: 200}
+    else
+      render json: {body: "#{@film.title} is not favorited by #{current_user.user_name}"}, status: :unprocessable_entity
     end
   end
 
