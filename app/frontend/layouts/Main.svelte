@@ -15,25 +15,22 @@
 </script>
 
 <main>
-    <header class="flex">
+    <header class="flex flex-wrap justify-center text-orange-100 bg-teal-500">
         <div>
-            <h1><a use:inertia href="/">📽️ MovieFinder.Club</a></h1>
+            <h1 class="text-8xl py-3">
+                <a use:inertia href="/">📽️ MovieFinder.Club</a>
+            </h1>
         </div>
-        <div class="flex">
+        <div class="flex justify-around pt-2 pb-3 w-screen text-5xl">
             {#if user.id}
                 <a use:inertia href="/discover/">Discover</a>
-            {/if}
-            <a use:inertia href="/films/recently_discovered"
-                >Recently Discovered</a
-            >
-            {#if !user.id}
-                <a use:inertia href="/sign_up">Sign Up</a>
-            {/if}
-            {#if user.id}
-                <a use:inertia href="/users/{user.user_name}/">Profile</a>
+                <a use:inertia href="/films/recently_discovered">Recent</a>
+                <a use:inertia href="/users/{user.user_name}">Profile</a>
                 <button on:click={deleteSession}>Sign out</button>
             {:else}
-                <SignIn />
+                <a use:inertia href="/sign_in">Sign In</a>
+
+                <a use:inertia href="/sign_up">Sign up</a>
             {/if}
         </div>
     </header>
@@ -41,24 +38,3 @@
         <slot {user} />
     </section>
 </main>
-
-<style>
-    main {
-        font-family: "helvetica";
-    }
-    header {
-        padding: 0px 1rem;
-    }
-    .flex {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        background-color: lightseagreen;
-    }
-    a {
-        text-decoration: none;
-        color: antiquewhite;
-        padding: 0px 0.5rem;
-    }
-</style>

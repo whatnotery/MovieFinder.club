@@ -36,5 +36,7 @@
         autocomplete="current-password"
         bind:value={formData.user.password}
     />
-    <button type="submit">Sign in</button>
+    <button class="btn border bs-danger-border-subtle" type="submit"
+        >Sign in</button
+    >
 </form>

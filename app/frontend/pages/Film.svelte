@@ -32,7 +32,7 @@
                     {/if}
                 </section>
                 <section id="filmtext">
-                    <h2>{filmData.title}</h2>
+                    <h2 class="text-3xl">{filmData.title}</h2>
 
                     <a
                         href={`https://www.themoviedb.org/movie/${filmData.mdb_id}`}
@@ -70,65 +70,3 @@
         </div>
     </section>
 </div>
-
-<style>
-    #wrap {
-        font-family: "Montserrat", sans-serif;
-        min-height: 95vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    #main {
-        max-width: 65%;
-        background-color: ghostwhite;
-        padding: 5px 10px;
-        margin-top: 30px;
-        border-radius: 15px;
-        -webkit-box-shadow: 0px 6px 15px 4px rgba(0, 0, 0, 0.5);
-        box-shadow: 0px 6px 15px 4px rgba(0, 0, 0, 0.5);
-        border: lightgrey 1px solid;
-    }
-
-    #filmWrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #filmtext {
-        margin-left: 20px;
-        max-width: 30rem;
-    }
-
-    img {
-        margin-top: 10px;
-        border-radius: 5px;
-        max-width: 15rem;
-    }
-
-    #filmContainer {
-        display: flex;
-        overflow: scroll;
-    }
-
-    @media (max-width: 768px) {
-        #filmWrap {
-            flex-direction: column;
-            max-width: 65%;
-        }
-    }
-    @media (max-width: 600px) {
-        #filmWrap {
-            flex-direction: column;
-            max-width: 85%;
-        }
-
-        #filmtext {
-            max-width: 80%;
-            margin-left: 0;
-        }
-    }
-</style>

@@ -3,23 +3,10 @@
     export let films;
 </script>
 
-<div id="wrap">
+<div>
     {#each films as film}
-        <div id="fpt">
+        <div>
             <FilmPosterAndTitle {film} />
         </div>
     {/each}
 </div>
-
-<style>
-    #wrap {
-        display: flex;
-        flex-direction: row;
-        width: 95%;
-        flex-wrap: wrap;
-        margin: auto;
-    }
-    #fpt {
-        width: 15rem;
-    }
-</style>

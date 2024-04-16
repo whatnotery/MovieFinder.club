@@ -1,7 +1,7 @@
 import { createInertiaApp } from '@inertiajs/svelte'
 import main from '../layouts/Main.svelte'
 import signIn from '../layouts/SignIn.svelte'
-import home from '../pages/Home.svelte'
+import '../stylesheets/main.css'
 
 createInertiaApp({
   resolve: name => {

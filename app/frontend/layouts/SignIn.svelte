@@ -14,40 +14,15 @@
 </script>
 
 <main>
-    <header class="flex">
+    <header class="flex flex-wrap justify-center text-orange-100 bg-teal-500">
         <div>
-            <h1><a use:inertia href="/">📽️ MovieFinder.Club</a></h1>
+            <h1 class="text-8xl py-3">
+                <a use:inertia href="/">📽️ MovieFinder.Club</a>
+            </h1>
         </div>
     </header>
     <section>
-        <h2></h2>
+        <h2>Sign In</h2>
         <slot />
     </section>
 </main>
-
-<style>
-    section {
-        font-family: "Montserrat", sans-serif;
-        min-height: 95vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-    header {
-        padding: 0px 1rem;
-        background-color: lightseagreen;
-    }
-    .flex {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
-    a {
-        text-decoration: none;
-        color: antiquewhite;
-        font-family: "helvetica";
-        padding: 0px 0.5rem;
-    }
-</style>

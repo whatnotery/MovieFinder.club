@@ -2,7 +2,7 @@
     export let film;
 </script>
 
-<div id="posterTitle">
+<div>
     <h4><a href="/films/{film.mdb_id}">{film.title} ({film.year})</a></h4>
 
     <img
@@ -11,15 +11,3 @@
         width="200px"
     />
 </div>
-
-<style>
-    h4 {
-        font-family: "helvetica";
-    }
-    #posterTitle {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
-    }
-</style>
