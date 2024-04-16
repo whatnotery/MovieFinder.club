@@ -32,6 +32,8 @@ Rails.application.routes.draw do
       get "/search", to: "films#search"
       post "/:id/like", to: "films#like"
       post "/:id/unlike", to: "films#unlike"
+      post "/:id/favorite", to: "films#favorite"
+      post "/:id/unfavorite", to: "films#unfavorite"
       get "/:id/liked_by", to: "films#liked_by"
       post "/:id/reviews", to: "reviews#create"
       get "/:id/reviews", to: "reviews#index"
