@@ -1,9 +1,10 @@
 <script>
+    import { inertia } from "@inertiajs/svelte";
     export let film;
 </script>
 
 <h4 class="font-bold text-xl text-teal-500 hover:text-teal-600">
-    <a class="text-wrap" href="/films/{film.mdb_id}"
+    <a use:inertia class="text-wrap" href="/films/{film.mdb_id}"
         >{film.title} ({film.year})</a
     >
 </h4>

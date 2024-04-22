@@ -19,6 +19,7 @@
         {:then film}
             <h4 class="text-lg">
                 <a
+                    use:inertia
                     class="font-bold text-xl text-teal-500 hover:text-teal-600"
                     href="/films/{review.mdb_id}">Review for {film.title}</a
                 >
@@ -39,6 +40,7 @@
                     </h4>
                     by
                     <a
+                        use:inertia
                         class="text-teal-500 hover:text-teal-600"
                         href="/users/{user.user_name}">{user.user_name}</a
                     >

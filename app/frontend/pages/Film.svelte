@@ -1,4 +1,6 @@
 <script>
+    import { inertia } from "@inertiajs/svelte";
+
     import axios from "axios";
     export let filmData = {};
     export let liked;
@@ -91,6 +93,7 @@
         <h2 class="font-bold text-2xl text-teal-500 pr-4">Reviews:</h2>
         {#if user.id}
             <a
+                use:inertia
                 href="/films/{filmData.mdb_id}/review"
                 class="rounded-full w-32 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
                 >new review <i class="fa-solid fa-plus"></i></a
