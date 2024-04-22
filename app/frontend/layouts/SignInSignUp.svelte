@@ -1,15 +1,5 @@
 <script>
     import { inertia } from "@inertiajs/svelte";
-    import { deleteSession, currentUser } from "../lib/auth";
-    let userPromise = currentUser();
-    let user = {};
-    userPromise
-        .then((result) => {
-            user = result;
-        })
-        .catch((error) => {
-            // Handle errors
-        });
 </script>
 
 <main class="w-screen">
