@@ -6,7 +6,6 @@
             password: null,
         },
     };
-
     async function submit() {
         try {
             const response = await axios.post("/users/sign_in", formData);
