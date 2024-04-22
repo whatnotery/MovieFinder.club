@@ -18,6 +18,7 @@
     "@esbuild/darwin-arm64": "^0.20.2",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.6.8",
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "esbuild": "^0.20.2"
   }
 }
