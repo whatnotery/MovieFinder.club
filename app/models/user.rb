@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :reviews
   has_many :favorites
+  has_many :favorite_films, through: :favorites, source: :film
   has_many :likes
   has_many :liked_films, through: :likes, source: :film
 

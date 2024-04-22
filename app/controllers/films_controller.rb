@@ -1,13 +1,13 @@
 class FilmsController < ApplicationController
-  before_action :authenticate_user!, only: %i[like unlike]
-  before_action :set_film, only: %i[show like unlike liked_by]
+  before_action :authenticate_user!, only: %i[like unlike favorite unfavorite]
+  before_action :set_film, only: %i[show like unlike favorite unfavorite liked_by]
 
   def index
     render json: Film.all.order(:year).order(:title).map { |film| Film.with_providers_and_trailer(film) }
   end
 
   def show
-    render inertia: "pages/Film", props: {filmData: Film.with_providers_and_trailer(@film), liked: @film.liked_by_users.include?(current_user)}
+    render inertia: "pages/Film", props: {filmData: Film.with_providers_and_trailer(@film), liked: @film.liked_by_users.include?(current_user), favorite: @film.favorited_by_users.include?(current_user)}
   end
 
   def like
@@ -30,7 +30,8 @@ class FilmsController < ApplicationController
   end
 
   def favorite
-    @favorite = Favorite.new(film: @film, mdb_id: @film.mdb_id, user: current_user)
+    @favorite = Favorite.new(film_id: @film.id, mdb_id: @film.mdb_id, user: current_user)
+    puts "does @favorite save #{@favorite.save}"
     if @favorite.save
       render json: {body: "#{@film.title} successfully favorited by #{current_user.user_name}", status: 200}
     else
@@ -39,7 +40,7 @@ class FilmsController < ApplicationController
   end
 
   def unfavorite
-    @favorite = Favorite.find_by(film: @film, mdb_id: @film.mdb_id, user: current_user)
+    @favorite = Favorite.find_by(film_id: @film.id, mdb_id: @film.mdb_id, user: current_user)
     if @favorite&.destroy
       render json: {body: "#{@film.title} successfully unfavorited by #{current_user.user_name}", status: 200}
     else

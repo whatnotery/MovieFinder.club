@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show update destroy likes reviews]
+  before_action :set_user, only: %i[show update destroy favorites likes reviews]
   before_action :authenticate_user!, only: %i[logged_in_user update destroy]
   before_action :authorize_admin!, only: %i[index]
 
@@ -62,6 +62,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def favorites
+    if @user.favorite_films.any?
+      render json: @user.favorite_films.order(:created_at)
+    else
+      head :no_content
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -71,6 +79,6 @@ class UsersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def user_params
-    params.require(:user).permit(:user_name, :first_name, :last_name, :phone, :is_admin)
+    params.require(:user).permit(:user_name, :first_name, :last_name, :bio, :letterboxd, :instagram, :is_admin)
   end
 end

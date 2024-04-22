@@ -1,4 +1,10 @@
 class Api::FilmsController < ActionController::API
+  before_action :set_film, only: %i[show]
+
+  def show
+    render json: @film
+  end
+
   def random
     render json: Film.get_random_film
   end
@@ -15,5 +21,20 @@ class Api::FilmsController < ActionController::API
       render xml: Film.twiml_error unless film
       render xml: Film.twiml([film]) if film
     end
+  end
+
+  private
+
+  def set_film
+    @film = Tmdb::Movie.detail(params[:id])
+
+    @film = Film.find_by(mdb_id: params[:id]) || Film.create(
+      mdb_id: @film["id"],
+      title: @film["title"].titleize,
+      year: @film["release_date"].slice(0, 4),
+      plot: @film["overview"],
+      poster: @film["poster_path"],
+      genres: @film["genre_ids"]
+    )
   end
 end

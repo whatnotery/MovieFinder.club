@@ -15,7 +15,15 @@
 </script>
 
 {#if liked}
-    <button on:click={unlikeFilm}>Unlike Film</button>
+    <button
+        class="rounded-full w-20 h-10 text-orange-100 bg-teal-500 m-2 py-2 hover:text-orange-200"
+        on:click={unlikeFilm}
+        >liked <i class="fa-solid fa-thumbs-up"></i></button
+    >
 {:else}
-    <button on:click={likeFilm}>Like Film</button>
+    <button
+        class="rounded-full w-20 h-10 text-orange-100 bg-teal-500 m-2 py-2 hover:text-orange-200"
+        on:click={likeFilm}
+        >like <i class="fa-regular fa-thumbs-up"></i>
+    </button>
 {/if}
