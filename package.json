@@ -1,7 +1,6 @@
 {
   "type": "module",
   "devDependencies": {
-    "@esbuild/darwin-arm64": "^0.20.2",
     "@inertiajs/svelte": "^1.0.15",
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
