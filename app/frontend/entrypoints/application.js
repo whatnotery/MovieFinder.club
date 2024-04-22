@@ -10,7 +10,11 @@ createInertiaApp({
 
     let layout = main
 
-    if (name == "pages/signIn" || name == "pages/signUp") {
+    if (name == "pages/signIn") {
+      layout = SignInSignUp
+    }
+
+    if (name == "pages/signUp") {
       layout = SignInSignUp
     }
 
