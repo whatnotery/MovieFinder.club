@@ -5,7 +5,7 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
-    render inertia: "pages/signIn"
+    render inertia: "pages/SignIn"
   end
 
   # POST /resource/sign_in
