@@ -2,7 +2,8 @@ class Film < ApplicationRecord
   has_many :reviews
   has_many :likes
   has_many :liked_by_users, through: :likes, source: :user
-
+  has_many :favorites
+  has_many :favorited_by_users, through: :favorites, source: :user
   validates :mdb_id, uniqueness: true
 
   def self.get_random_film(genre = nil, year = nil)

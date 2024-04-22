@@ -1,7 +1,7 @@
 class ReviewsController < ApplicationController
-  before_action :set_film, only: [:index, :show, :create, :update, :destroy]
+  before_action :set_film, only: [:index, :show, :new, :create, :update, :destroy]
   before_action :set_review, only: [:show, :update, :destroy]
-  before_action :authenticate_devise_api_token!, only: %i[create update destroy]
+  before_action :authenticate_user!, only: %i[create update destroy]
 
   def index
     render json: @film.reviews
@@ -10,6 +10,10 @@ class ReviewsController < ApplicationController
   # GET /reviews/1
   def show
     render json: @review
+  end
+
+  def new
+    render inertia: "pages/newReview", props: {film: @film}
   end
 
   # POST /reviews
@@ -59,6 +63,6 @@ class ReviewsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def review_params
-    params.require(:review).permit(:title, :rating, :body)
+    params.require(:review).permit(:title, :rating, :body, :mdb_id)
   end
 end

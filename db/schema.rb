@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_15_030836) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_21_172426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_15_030836) do
     t.index ["previous_refresh_token"], name: "index_devise_api_tokens_on_previous_refresh_token"
     t.index ["refresh_token"], name: "index_devise_api_tokens_on_refresh_token"
     t.index ["resource_owner_type", "resource_owner_id"], name: "index_devise_api_tokens_on_resource_owner"
+  end
+
+  create_table "favorites", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "film_id", null: false
+    t.integer "mdb_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["film_id"], name: "index_favorites_on_film_id"
+    t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
   create_table "films", force: :cascade do |t|
@@ -60,6 +70,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_15_030836) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "mdb_id"
     t.index ["film_id"], name: "index_reviews_on_film_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
@@ -76,10 +87,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_15_030836) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.boolean "is_admin"
+    t.string "bio"
+    t.string "letterboxd"
+    t.string "instagram"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "favorites", "films"
+  add_foreign_key "favorites", "users"
   add_foreign_key "likes", "films"
   add_foreign_key "likes", "users"
   add_foreign_key "reviews", "films"

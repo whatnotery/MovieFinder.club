@@ -1,7 +1,7 @@
 import { createInertiaApp } from '@inertiajs/svelte'
 import main from '../layouts/Main.svelte'
-import signIn from '../layouts/SignIn.svelte'
-import home from '../pages/Home.svelte'
+import SignInSignUp from '../layouts/SignInSignUp.svelte'
+import '../stylesheets/main.css'
 
 createInertiaApp({
   resolve: name => {
@@ -10,8 +10,12 @@ createInertiaApp({
 
     let layout = main
 
-    if (name == "pages/signIn" || name == "pages/signUp") {
-      layout = signIn
+    if (name == "pages/signIn") {
+      layout = SignInSignUp
+    }
+
+    if (name == "pages/signUp") {
+      layout = SignInSignUp
     }
 
     return {

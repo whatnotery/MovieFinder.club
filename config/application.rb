@@ -29,7 +29,5 @@ module RandomMovie
         resource "*", headers: :any, methods: [:get, :post, :put, :patch, :delete, :options]
       end
     end
-
-    config.api_only = false
   end
 end

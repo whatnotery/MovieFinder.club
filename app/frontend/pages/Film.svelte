@@ -1,10 +1,14 @@
 <script>
-    export let filmData = {};
-    import { onMount } from "svelte";
-    import Like from "../components/Like.svelte";
     import axios from "axios";
+    export let filmData = {};
+    export let liked;
+    export let favorite;
+    import Favorite from "../components/favorite.svelte";
+    import LikeUnlike from "../components/LikeUnlike.svelte";
+    import ReviewList from "../components/reviewList.svelte";
     import { currentUser } from "../lib/auth";
     let userPromise = currentUser();
+
     let user = {};
     userPromise
         .then((result) => {
@@ -17,118 +21,88 @@
     async function fetchRandomFilm() {
         window.location.href = "/discover";
     }
+
+    async function getReviews() {
+        const response = await axios.get(`/films/${filmData.mdb_id}/reviews`);
+        return response.data;
+    }
+    let reviewsPromise = getReviews();
 </script>
 
-<div id="wrap">
-    <section id="main">
-        <div id="filmWrap" class="">
-            <div id="filmContainer">
-                <section>
-                    {#if filmData.poster}
-                        <img
-                            src="https://image.tmdb.org/t/p/w300/{filmData.poster}"
-                            alt={`Movie poster for ${filmData.title}`}
-                        />
-                    {/if}
-                </section>
-                <section id="filmtext">
-                    <h2>{filmData.title}</h2>
+<section
+    class="flex flex-col items-center justify-center pt-7 md:flex-row md:items-start"
+>
+    <div class="md:pl-9 md:min-w-80 md:flex md:flex-col md:items-center">
+        {#if filmData.poster}
+            <img
+                class="w-64"
+                src="https://image.tmdb.org/t/p/w300/{filmData.poster}"
+                alt={`Movie poster for ${filmData.title}`}
+            />
+        {/if}
+    </div>
+    <div class="text-center md:text-left">
+        <span class="flex flex-col md:flex-row items-center">
+            <h2 class="font-bold w-6/12 text-2xl text-teal-500 my-6 pr-4">
+                {filmData.title} ({filmData.year})
+            </h2>
+            <span class="text-nowrap m-2">
+                <a
+                    class="rounded-full w-full h-10 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
+                    href={filmData.youtube_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </span>
+            {#if user.id}
+                <Favorite filmId={filmData.mdb_id} {favorite} />
+                <LikeUnlike filmId={filmData.mdb_id} {liked} />
+                <button
+                    class="rounded-full w-40 h-10 text-orange-100 bg-teal-500 m-2 py-2 hover:text-orange-200"
+                    on:click={fetchRandomFilm}
+                >
+                    discover more <i class="fa-solid fa-film"></i></button
+                >
+            {/if}
+        </span>
 
-                    <a
-                        href={`https://www.themoviedb.org/movie/${filmData.mdb_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer">The Movie DB</a
-                    >
-                    |
-                    <a
-                        href={filmData.youtube_link}
-                        target="_blank"
-                        rel="noopener noreferrer">Youtube Trailer</a
-                    >
-                    {#if user.id}
-                        <button on:click={fetchRandomFilm}
-                            >Discover New Film</button
-                        >
+        <span class="md:flex md:flex-col md:items-start">
+            <p>{filmData.plot}</p>
 
-                        <Like filmId={filmData.mdb_id} />
-                    {/if}
-                    <p>{filmData.plot}</p>
-                    <b>Streaming Providers:</b>
-                    <p>
-                        {filmData?.streaming_providers?.length > 0
-                            ? filmData.streaming_providers.join(", ")
-                            : "None"}
-                    </p>
-                    <b>Rental Providers:</b>
-                    <p>
-                        {filmData?.rental_providers?.length > 0
-                            ? filmData.rental_providers.join(", ")
-                            : "None"}
-                    </p>
-                </section>
-            </div>
-        </div>
-    </section>
+            <b>Streaming Providers:</b>
+            <p>
+                {filmData?.streaming_providers?.length > 0
+                    ? filmData.streaming_providers.join(", ")
+                    : "None"}
+            </p>
+            <b>Rental Providers:</b>
+            <p>
+                {filmData?.rental_providers?.length > 0
+                    ? filmData.rental_providers.join(", ")
+                    : "None"}
+            </p>
+        </span>
+    </div>
+</section>
+<div class="md:pl-9">
+    <div class="w-full flex flex-row flex-wrap justify-between my-2">
+        <h2 class="font-bold text-2xl text-teal-500 pr-4">Reviews:</h2>
+        {#if user.id}
+            <a
+                href="/films/{filmData.mdb_id}/review"
+                class="rounded-full w-32 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
+                >new review <i class="fa-solid fa-plus"></i></a
+            >
+        {/if}
+    </div>
+
+    {#await reviewsPromise}
+        <p>...waiting</p>
+    {:then reviews}
+        <ReviewList {reviews} userPage="false" />
+    {:catch error}
+        <p style="color: red">{error.message}</p>
+    {/await}
 </div>
-
-<style>
-    #wrap {
-        font-family: "Montserrat", sans-serif;
-        min-height: 95vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    #main {
-        max-width: 65%;
-        background-color: ghostwhite;
-        padding: 5px 10px;
-        margin-top: 30px;
-        border-radius: 15px;
-        -webkit-box-shadow: 0px 6px 15px 4px rgba(0, 0, 0, 0.5);
-        box-shadow: 0px 6px 15px 4px rgba(0, 0, 0, 0.5);
-        border: lightgrey 1px solid;
-    }
-
-    #filmWrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #filmtext {
-        margin-left: 20px;
-        max-width: 30rem;
-    }
-
-    img {
-        margin-top: 10px;
-        border-radius: 5px;
-        max-width: 15rem;
-    }
-
-    #filmContainer {
-        display: flex;
-        overflow: scroll;
-    }
-
-    @media (max-width: 768px) {
-        #filmWrap {
-            flex-direction: column;
-            max-width: 65%;
-        }
-    }
-    @media (max-width: 600px) {
-        #filmWrap {
-            flex-direction: column;
-            max-width: 85%;
-        }
-
-        #filmtext {
-            max-width: 80%;
-            margin-left: 0;
-        }
-    }
-</style>
