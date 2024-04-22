@@ -1,6 +1,7 @@
 {
   "type": "module",
   "devDependencies": {
+    "@esbuild/darwin-arm64": "^0.20.2",
     "@inertiajs/svelte": "^1.0.15",
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -15,7 +16,6 @@
     "vite-plugin-ruby": "^5.0.0"
   },
   "dependencies": {
-    "@esbuild/darwin-arm64": "^0.20.2",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
