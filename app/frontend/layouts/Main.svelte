@@ -20,13 +20,18 @@
             <a use:inertia href="/"><span>📽️ MovieFinder.Club</span></a>
         </h1>
         <div
-            class="flex flex-row w-full justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
+            class="text-sm flex flex-row w-full justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
         >
             {#if user.id}
                 <a
                     use:inertia
                     class="px-5 hover:text-orange-200"
                     href="/discover/">Discover</a
+                >
+                <a
+                    use:inertia
+                    class="px-5 hover:text-orange-200"
+                    href="/films/recently_discovered">Recent Discoveries</a
                 >
                 <a
                     use:inertia
