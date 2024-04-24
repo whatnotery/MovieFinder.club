@@ -52,12 +52,8 @@ class FilmsController < ApplicationController
     render json: @film.liked_by_users
   end
 
-  def recently_liked
-    render inertia: "pages/Recent", props: {pageTitle: "recently liked films", filmsArray: Film.joins(:likes).order("likes.created_at DESC").limit(25).uniq}
-  end
-
-  def recently_reviewed
-    render inertia: "pages/Recent", props: {pageTitle: "recently reviewed films", filmsArray: Film.joins(:reviews).order("reviews.created_at DESC").limit(25).uniq}
+  def recent
+    render inertia: "pages/Recent", props: {likedFilms: Film.joins(:likes).order("likes.created_at DESC").limit(14).uniq, reviewedFilms: Film.joins(:reviews).order("reviews.created_at DESC").limit(25).uniq}
   end
 
   def search
