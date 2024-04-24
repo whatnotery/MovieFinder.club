@@ -92,8 +92,19 @@ class Film < ApplicationRecord
   end
 
   def self.movie_valid?(film)
-    film["title"].present? && film["poster_path"].present? &&
-      film["overview"].present? && film["release_date"].present?
+    film["title"].present? &&
+      film["poster_path"].present? &&
+      film["overview"].present? &&
+      film["release_date"].present? &&
+      is_not_porn(film["overview"])
+  end
+
+  def self.is_not_porn(overview)
+    overview = overview.downcase
+    !overview.include?("sex") &&
+      !overview.include?("s&m") &&
+      !overview.include?("orgasm") &&
+      !overview.include?("very hot")
   end
 
   def self.genre_param_valid?(genre)

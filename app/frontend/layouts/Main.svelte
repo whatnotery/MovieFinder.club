@@ -31,7 +31,12 @@
                 <a
                     use:inertia
                     class="px-5 hover:text-orange-200"
-                    href="/films/recently_discovered">Recent Discoveries</a
+                    href="/films/recently_liked">Recent Likes</a
+                >
+                <a
+                    use:inertia
+                    class="px-5 hover:text-orange-200"
+                    href="/films/recently_reviewed">Recent Reviews</a
                 >
                 <a
                     use:inertia

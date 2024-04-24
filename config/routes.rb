@@ -42,7 +42,7 @@ Rails.application.routes.draw do
       get "/:id/reviews", to: "reviews#index"
       get "/:id/reviews/:review_id", to: "reviews#show"
       get "/recently_reviewed", to: "films#recently_reviewed"
-      get "/recently_discovered", to: "films#recently_discovered"
+      get "/recently_liked", to: "films#recently_liked"
     end
   end
 end
