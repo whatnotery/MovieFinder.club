@@ -20,7 +20,7 @@
             <a use:inertia href="/"><span>📽️ MovieFinder.Club</span></a>
         </h1>
         <div
-            class="text-sm flex flex-row w-full justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
+            class="text-xs flex flex-row w-full justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
         >
             {#if user.id}
                 <a
