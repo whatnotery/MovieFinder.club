@@ -57,7 +57,7 @@ class FilmsController < ApplicationController
   end
 
   def search
-    render json: Film.search(params["query"])
+    render inertia: "pages/Search"
   end
 
   private

@@ -6,11 +6,13 @@ Rails.application.routes.draw do
   namespace :api do
     resources :films do
       collection do
-        get "/:id", to: "films#show"
         get "/random", to: "films#random"
+        get "/search", to: "films#search"
         post "/twilio", to: "films#twilio"
+        get "/:id", to: "films#show"
       end
     end
+    resources :users, only: :show
   end
 
   devise_scope :user do
@@ -19,6 +21,7 @@ Rails.application.routes.draw do
 
   get "/sign_up", to: "users#new"
   get "/discover", to: "static#random_film"
+  get "/search", to: "films#search"
 
   resources :users do
     collection do
@@ -31,7 +34,6 @@ Rails.application.routes.draw do
 
   resources :films, only: [:index, :show] do
     collection do
-      get "/search", to: "films#search"
       post "/:id/like", to: "films#like"
       post "/:id/unlike", to: "films#unlike"
       post "/:id/favorite", to: "films#favorite"

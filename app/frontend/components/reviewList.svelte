@@ -34,8 +34,9 @@
                     class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
                     on:click={() => changePage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    ><i class="fa-solid fa-chevron-left"></i></button
                 >
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
                 <span class="font-bold text-teal-500 mx-2">
                     {currentPage} of {totalPages}
                 </span>
@@ -43,8 +44,9 @@
                     class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
                     on:click={() => changePage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    ><i class="fa-solid fa-chevron-right"></i></button
                 >
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
         {/if}
 
@@ -56,18 +58,16 @@
                     {#await getFilm(review.mdb_id)}
                         <p>Loading film details...</p>
                     {:then film}
-                        {#if film}
+                        {#if userPage && film}
                             <a
                                 class="font-bold text-xl text-teal-500 hover:text-teal-600"
                                 href="/films/{film.mdb_id}"
                             >
                                 Review for {film.title}
                             </a>
-                        {:else}
-                            <p>Film details unavailable.</p>
                         {/if}
                     {:catch error}
-                        <p>Error loading film details.</p>
+                        <p>Error loading film details: {error.message}</p>
                     {/await}
                     <ShowReview {review} {userPage} />
                 </div>

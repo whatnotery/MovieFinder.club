@@ -16,41 +16,39 @@
     );
 </script>
 
-<div>
-    {#if films && films.length > 0}
-        <div
-            class="flex flex-row flex-wrap w-full items-end justify-center md:flex-row md:justify-center"
-        >
-            {#if films.length > itemsPerPage}
-                <div class="pb-4">
-                    <button
-                        class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
-                        on:click={() => changePage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        ><i class="fa-solid fa-chevron-left"></i></button
-                    >
-                    <span class="font-bold text-teal-500">
-                        {currentPage} of {totalPages}</span
-                    >
+{#if films && films.length > 0}
+    <div class="flex flex-row flex-wrap w-full justify-center md:flex-row">
+        {#if films.length > itemsPerPage}
+            <div class="pb-4">
+                <button
+                    class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
+                    on:click={() => changePage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    ><i class="fa-solid fa-chevron-left"></i></button
+                >
+                <span class="font-bold text-teal-500">
+                    {currentPage} of {totalPages}</span
+                >
 
-                    <button
-                        class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
-                        on:click={() => changePage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        ><i class="fa-solid fa-chevron-right"></i></button
-                    >
-                </div>
-            {/if}
-
-            <div class="flex flex-row flex-wrap w-full items-end pb-6">
-                {#each paginatedFilms as film}
-                    <div class="w-[175px] px-4">
-                        <FilmPosterAndTitle {film} />
-                    </div>
-                {/each}
+                <button
+                    class="rounded-full w-10 text-orange-100 bg-teal-500 hover:text-orange-200"
+                    on:click={() => changePage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    ><i class="fa-solid fa-chevron-right"></i></button
+                >
             </div>
+        {/if}
+
+        <div
+            class="flex flex-row flex-wrap w-full items-end justify-center pb-6"
+        >
+            {#each paginatedFilms as film}
+                <div class="w-[175px] px-4">
+                    <FilmPosterAndTitle {film} />
+                </div>
+            {/each}
         </div>
-    {:else}
-        <p>No films to display.</p>
-    {/if}
-</div>
+    </div>
+{:else}
+    <p>No films to display.</p>
+{/if}

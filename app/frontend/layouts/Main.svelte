@@ -28,6 +28,9 @@
                     class="px-5 hover:text-orange-200"
                     href="/discover/">Discover</a
                 >
+                <a use:inertia class="px-5 hover:text-orange-200" href="/search"
+                    >Search</a
+                >
                 <a
                     use:inertia
                     class="px-5 hover:text-orange-200"

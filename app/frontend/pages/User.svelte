@@ -84,7 +84,7 @@
             {#await reviewsPromise}
                 <p>...waiting</p>
             {:then reviews}
-                <ReviewList {reviews} userPage="true" />
+                <ReviewList {reviews} userPage={true} />
             {:catch error}
                 <p style="color: red">{error.message}</p>
             {/await}
