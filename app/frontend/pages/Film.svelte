@@ -95,7 +95,7 @@
             <a
                 use:inertia
                 href="/films/{filmData.mdb_id}/review"
-                class="rounded-full w-32 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
+                class="rounded-full pl-3 pt-2 h-10 w-32 text-orange-100 bg-teal-500 hover:text-orange-200"
                 >new review <i class="fa-solid fa-plus"></i></a
             >
         {/if}

@@ -53,7 +53,7 @@ class FilmsController < ApplicationController
   end
 
   def recent
-    render inertia: "pages/Recent", props: {likedFilms: Film.joins(:likes).order("likes.created_at DESC").limit(14).uniq, reviewedFilms: Film.joins(:reviews).order("reviews.created_at DESC").limit(25).uniq}
+    render inertia: "pages/Recent", props: {likedFilms: Film.joins(:likes).order("likes.created_at DESC").limit(50).uniq, reviewedFilms: Film.joins(:reviews).order("reviews.created_at DESC").limit(50).uniq}
   end
 
   def search

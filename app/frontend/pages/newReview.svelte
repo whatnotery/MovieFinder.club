@@ -49,6 +49,7 @@
             min="0"
             max="5"
             step="1"
+            bind:value={formData.review.rating}
         />
         <label for="review" hidden>review</label>
 
