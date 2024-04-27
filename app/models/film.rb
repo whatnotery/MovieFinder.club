@@ -104,6 +104,7 @@ class Film < ApplicationRecord
     !overview.include?("sex") &&
       !overview.include?("s&m") &&
       !overview.include?("orgasm") &&
+      !overview.include?("brothel") &&
       !overview.include?("very hot")
   end
 
