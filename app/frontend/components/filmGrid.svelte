@@ -40,7 +40,7 @@
         {/if}
 
         <div
-            class="flex flex-row flex-wrap w-full items-center justify-start pb-6"
+            class="flex flex-row flex-wrap w-full items-end justify-start pb-6"
         >
             {#each paginatedFilms as film}
                 <div class="w-[175px] px-4">
