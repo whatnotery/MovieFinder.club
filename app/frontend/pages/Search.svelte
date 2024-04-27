@@ -35,7 +35,6 @@
                 class="rounded-full border-teal-500"
                 type="text"
                 placeholder="Search"
-                autocomplete="search"
                 bind:value={searchQuery}
             />
         </div>
