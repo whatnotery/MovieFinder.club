@@ -39,7 +39,7 @@
             <p style="color: red">{error.message}</p>
         {/await}
 
-        <div>
+        <div class="text-nowrap">
             {#each Array(review.rating).fill() as _, i}
                 <i class="text-teal-500 fa-solid fa-star"></i>
             {/each}
