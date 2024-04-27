@@ -20,30 +20,36 @@
             <a use:inertia href="/"><span>📽️ MovieFinder.Club</span></a>
         </h1>
         <div
-            class="text-xs flex flex-row w-full justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
+            class="text-sm flex flex-row w-full items-center justify-around pt-2 pb-3 text-2xl md:text-xl md:justify-end"
         >
             {#if user.id}
+                <a use:inertia class="px-5 hover:text-orange-200" href="/search"
+                    ><i
+                        class="hover:border-orange-200 border-solid p-3 rounded-full border-2 border-orange-100 fa-solid fa-search"
+                    ></i></a
+                >
+
                 <a
                     use:inertia
                     class="px-5 hover:text-orange-200"
                     href="/discover/">Discover</a
-                >
-                <a use:inertia class="px-5 hover:text-orange-200" href="/search"
-                    >Search</a
                 >
                 <a
                     use:inertia
                     class="px-5 hover:text-orange-200"
                     href="/films/recent">Recent</a
                 >
-                <a
-                    use:inertia
-                    class="px-5 hover:text-orange-200"
-                    href="/users/{user.user_name}">Profile</a
-                >
                 <button
                     class="px-5 hover:text-orange-200"
                     on:click={deleteSession}>Sign out</button
+                >
+                <a
+                    use:inertia
+                    class="px-5 hover:text-orange-200"
+                    href="/users/{user.user_name}"
+                    ><i
+                        class="hover:border-orange-200 border-solid p-3 rounded-full border-2 border-orange-100 fa-solid fa-user"
+                    ></i></a
                 >
             {:else}
                 <a

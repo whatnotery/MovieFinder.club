@@ -24,32 +24,33 @@
     }
 </script>
 
-<form
-    on:submit|preventDefault={search}
-    class="flex flex-col justify-center items-center pb-10"
->
-    <h3 class=" font-bold pt-6 text-4xl text-teal-500">Search</h3>
-    <div class="py-2 my-4">
-        <input
-            class="rounded-full border-teal-500"
-            type="text"
-            placeholder="Search"
-            autocomplete="search"
-            bind:value={searchQuery}
-        />
-    </div>
-    <button
-        class="rounded-full w-32 text-orange-100 bg-teal-500 py-2 hover:text-orange-200"
-        type="submit"
-        disabled={searchQuery.trim() === "" || searching}>Search</button
+<div class="flex flex-col item-center justify-center">
+    <form
+        on:submit|preventDefault={search}
+        class="flex flex-col justify-center items-center pb-10"
     >
-</form>
+        <h3 class=" font-bold pt-6 text-4xl text-teal-500">Search</h3>
+        <div class="py-2 my-4">
+            <input
+                class="rounded-full border-teal-500"
+                type="text"
+                placeholder="Search"
+                autocomplete="search"
+                bind:value={searchQuery}
+            />
+        </div>
+        <button
+            class="rounded-full w-32 text-orange-100 bg-teal-500 py-2 hover:text-orange-200"
+            type="submit"
+            disabled={searchQuery.trim() === "" || searching}>Search</button
+        >
+    </form>
 
-<!-- Handle different states of the search -->
-{#if searching}
-    <p>Loading...</p>
-{:else if results.length > 0}
-    <FilmGrid films={results} />
-{:else if error}
-    <p class="error">{error}</p>
-{/if}
+    {#if searching}
+        <p>Loading...</p>
+    {:else if results.length > 0}
+        <FilmGrid films={results} />
+    {:else if error}
+        <p class="error">{error}</p>
+    {/if}
+</div>

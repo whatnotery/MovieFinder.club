@@ -17,10 +17,13 @@
     }
 </script>
 
-<form on:submit|preventDefault={submit} class="flex flex-col items-center">
+<form
+    on:submit|preventDefault={submit}
+    class="flex flex-col justify-center items-center"
+>
     <h3 class="text-4xl text-teal-500">Sign In</h3>
 
-    <div class="py-2 my-4">
+    <div class="flex flex-col py-2 my-4">
         <label for="email" hidden>Email</label>
         <input
             class="rounded-full border-teal-500"
