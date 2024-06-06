@@ -12,7 +12,12 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    render inertia: "pages/User", props: {userData: @user}
+    render inertia: "pages/User", props: {
+      user: @user,
+      userFavorites: @user.favorite_films.order(:created_at),
+      userLikes:  @user.liked_films.reverse,
+      userReviews: @user.reviews.reverse
+    }
   end
 
   def new
@@ -46,14 +51,6 @@ class UsersController < ApplicationController
     render json: User.find(current_user.id)
   end
 
-  def likes
-    if @user.liked_films.any?
-      render json: @user.liked_films.reverse
-    else
-      head :no_content
-    end
-  end
-
   def reviews
     if @user.reviews.any?
       render json: @user.reviews.reverse
@@ -62,13 +59,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def favorites
-    if @user.favorite_films.any?
-      render json: @user.favorite_films.order(:created_at)
-    else
-      head :no_content
-    end
-  end
+
 
   private
 

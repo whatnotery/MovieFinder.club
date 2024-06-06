@@ -9,7 +9,7 @@ class Favorite < ApplicationRecord
   private
 
   def check_favorite_limit
-    if Favorite.where(user_id: user_id).count >= 4
+    if Favorite.where(user_id: user_id).count >= 5
       errors.add(:base, "User can have only four favorites")
     end
   end

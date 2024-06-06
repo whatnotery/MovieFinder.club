@@ -1,27 +1,10 @@
 <script>
-    import axios from "axios";
-    export let userData;
+    export let user;
+    export let userFavorites;
+    export let userLikes;
+    export let userReviews;
     import FilmGrid from "../components/filmGrid.svelte";
     import ReviewList from "../components/reviewList.svelte";
-    async function getLikedFilms() {
-        const response = await axios.get(`/users/${userData.user_name}/likes`);
-        return response.data;
-    }
-    async function getFavorites() {
-        const response = await axios.get(
-            `/users/${userData.user_name}/favorites`,
-        );
-        return response.data;
-    }
-    async function getReviews() {
-        const response = await axios.get(
-            `/users/${userData.user_name}/reviews`,
-        );
-        return response.data;
-    }
-    let filmsPromise = getLikedFilms();
-    let favoritesPromise = getFavorites();
-    let reviewsPromise = getReviews();
 </script>
 
 <section
@@ -32,16 +15,16 @@
             <div class="flex flex-row w-4/12">
                 <div class="">
                     <h2 class="font-bold py-5 text-4xl text-teal-500">
-                        @{userData.user_name}
+                        @{user.user_name}
                     </h2>
 
-                    <p>{userData.bio}</p>
+                    <p>{user.bio}</p>
                     <div class="pt-5">
-                        {#if userData.letterboxd}
+                        {#if user.letterboxd}
                             <p>
                                 <a
                                     class="rounded-full w-full h-10 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
-                                    href="https://letterboxd.com/{userData.letterboxd}"
+                                    href="https://letterboxd.com/{user.letterboxd}"
                                 >
                                     letterboxd <i
                                         class="fa-brands fa-letterboxd"
@@ -50,11 +33,11 @@
                             </p>
                         {/if}
                         <br />
-                        {#if userData.instagram}
+                        {#if user.instagram}
                             <p>
                                 <a
                                     class="rounded-full w-full h-10 text-orange-100 bg-teal-500 p-2 hover:text-orange-200"
-                                    href="https://instagram.com/{userData.instagram}"
+                                    href="https://instagram.com/{user.instagram}"
                                 >
                                     instagram <i class="fa-brands fa-instagram"
                                     ></i></a
@@ -69,35 +52,17 @@
                     favorites:
                 </h3>
                 <div class="flex flex-row">
-                    {#await favoritesPromise}
-                        <p>...waiting</p>
-                    {:then favorites}
-                        <FilmGrid films={favorites} />
-                    {:catch error}
-                        <p style="color: red">{error.message}</p>
-                    {/await}
+                    <FilmGrid films={userFavorites} />
                 </div>
             </div>
         </div>
         <div class="flex flex-col w-80 md:w-full">
             <h3 class="font-bold py-5 text-4xl text-teal-500">reviews:</h3>
-            {#await reviewsPromise}
-                <p>...waiting</p>
-            {:then reviews}
-                <ReviewList {reviews} userPage={true} />
-            {:catch error}
-                <p style="color: red">{error.message}</p>
-            {/await}
+            <ReviewList reviews={userReviews} userPage={true} />
         </div>
         <div class="flex flex-col w-80 md:w-full">
             <h3 class="font-bold py-5 text-4xl text-teal-500">likes:</h3>
-            {#await filmsPromise}
-                <p>...waiting</p>
-            {:then likedFilms}
-                <FilmGrid films={likedFilms} />
-            {:catch error}
-                <p style="color: red">{error.message}</p>
-            {/await}
+            <FilmGrid films={userLikes} />
         </div>
     </div>
 </section>
